@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Starte dein eigenes Business ohne Risiko. Fertiges System, echte Produkte, volle Unterstützung. Jetzt per WhatsApp informieren!">
+    <title>Raus aus dem Hamsterrad | Starte jetzt dein Business – Cedric Nitsch</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        reico: {
+                            alge: '#3A3D0C',
+                            chlorophyll: '#EEF5B2',
+                            chlorophyllDark: '#E7F191',
+                            kalk: '#EAE2D5',
+                            kristall: '#FF9888',
+                            text: '#2C2C2C',
+                            light: '#FAFAF8'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .smooth-scroll { scroll-behavior: smooth; }
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3 ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -5px rgba(58, 61, 12, 0.15);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3A3D0C 0%, #FF9888 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .whatsapp-btn {
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            transition: all 0.3s ease;
+        }
+        .whatsapp-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px -5px rgba(37, 211, 102, 0.4);
+        }
+    </style>
+</head>
+<body class="font-sans text-reico-text bg-white smooth-scroll">
+
+    <!-- Fixed WhatsApp Button -->
+    <a href="https://wa.me/4915678516818?text=Hi%20Cedric,%20ich%20will%20mehr%20erfahren%20zum%20Business%20Start!" 
+       target="_blank"
+       class="fixed bottom-6 right-6 z-50 whatsapp-btn text-white p-4 rounded-full shadow-2xl flex items-center gap-2 font-semibold pr-6">
+        <i data-lucide="message-circle" class="w-6 h-6"></i>
+        <span class="hidden sm:inline">WhatsApp</span>
+    </a>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-white/95 backdrop-blur-sm border-b border-reico-kalk z-40 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center space-x-4">
+                    <div class="flex flex-col">
+                        <span class="text-xl font-bold text-reico-alge tracking-tight">Cedric Nitsch</span>
+                        <span class="text-xs text-reico-alge/70 font-medium">Business Mentor</span>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#problem" class="text-sm font-medium text-reico-alge/80 hover:text-reico-kristall transition-colors">Das Problem</a>
+                    <a href="#loesung" class="text-sm font-medium text-reico-alge/80 hover:text-reico-kristall transition-colors">Die Lösung</a>
+                    <a href="#einfach" class="text-sm font-medium text-reico-alge/80 hover:text-reico-kristall transition-colors">So gehts</a>
+                    <a href="https://wa.me/4915678516818?text=Hi%20Cedric,%20ich%20will%20mehr%20erfahren!" 
+                       target="_blank"
+                       class="whatsapp-btn text-white px-6 py-3 rounded-full text-sm font-bold shadow-lg">
+                        WhatsApp schreiben
+                    </a>
+                </div>
+                
+                <button class="md:hidden p-2 text-reico-alge" id="mobile-menu-btn">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div class="hidden md:hidden bg-white border-t border-reico-kalk" id="mobile-menu">
+            <div class="px-4 py-4 space-y-3">
+                <a href="#problem" class="block text-reico-alge font-medium">Das Problem</a>
+                <a href="#loesung" class="block text-reico-alge font-medium">Die Lösung</a>
+                <a href="#einfach" class="block text-reico-alge font-medium">So gehts</a>
+                <a href="https://wa.me/4915678516818?text=Hi%20Cedric,%20ich%20will%20mehr%20erfahren!" 
+                   target="_blank"
+                   class="block text-center bg-reico-kristall text-reico-alge font-bold py-3 rounded-full mt-4">
+                    WhatsApp schreiben
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 1. HERO SECTION -->
+    <section class="relative pt-32 pb-20 lg:pt-40 lg:pb-32 bg-reico-chlorophyll/30 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-reico-chlorophyll/50 via-transparent to-reico-kalk/30"></div>
+        
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <!-- Text Content -->
+                <div class="text-center lg:text-left order-1">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-reico-alge/10 shadow-sm mb-8">
+                        <span class="flex h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
+                        <span class="text-sm font-semibold text-reico-alge">Starte jetzt und schau, ob es zu dir passt</span>
+                    </div>
+                    
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-reico-alge leading-tight mb-6">
+                        Raus aus dem <br>
+                        <span class="text-reico-kristall">Hamsterrad.</span>
+                    </h1>
+                    
+                    <p class="text-xl md:text-2xl text-reico-text/80 max-w-2xl mx-auto lg:mx-0 mb-4 font-medium">
+                        Starte dein eigenes Business – <span class="text-reico-alge font-bold">ohne Risiko.</span>
+                    </p>
+                    
+                    <p class="text-lg text-reico-text/60 max-w-xl mx-auto lg:mx-0 mb-10">
+                        Nutze ein fertiges System, das seit über 30 Jahren funktioniert. 
+                        Kein Lager. Keine Logistik. Kein Eigenkapital nötig.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-6 justify-center lg:justify-start items-center mb-12">
+                        <a href="https://wa.me/4915678516818?text=Hi%20Cedric,%20ich%20will%20mehr%20erfahren%20zum%20Business!" 
+                           target="_blank"
+                           class="whatsapp-btn text-white px-8 py-4 rounded-full text-lg font-bold shadow-xl flex items-center gap-3 hover:scale-105 transition-transform whitespace-nowrap">
+                            <i data-lucide="message-circle" class="w-6 h-6"></i>
+                            <span>Jetzt WhatsApp schreiben</span>
+                        </a>
+                        <a href="#problem" class="text-reico-alge font-semibold underline decoration-2 underline-offset-4 hover:text-reico-kristall transition-colors whitespace-nowrap py-4 px-2">
+                            Erst mehr erfahren →
+                        </a>
+                    </div>
+                    
+                    <div class="flex flex-wrap justify-center lg:justify-start gap-8 text-sm text-reico-alge/70 font-medium">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-green-600"></i>
+                            <span>Kein Risiko</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-green-600"></i>
+                            <span>Sofort starten</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-green-600"></i>
+                            <span>Auch nebenbei</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-green-600"></i>
+                            <span>Persönliche Betreuung</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Hero Image -->
+                <div class="relative order-2 lg:order-1">
+                    <div class="relative mx-auto max-w-lg lg:max-w-full">
+                        <img src="https://huggingface.co/spaces/Hosenboden/deepsite-project-rep9l/resolve/main/images/Hund2.jpg" alt="Glücklicher Hund mit REiCO Produkten" class="w-full h-auto rounded-2xl shadow-2xl object-cover">
+                        <div class="absolute -bottom-4 -right-4 bg-reico-kristall text-reico-alge px-4 py-2 rounded-full text-sm font-bold shadow-lg">
+                            Dein neues Business
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. PROBLEM SECTION (Emotional abholen) -->
+    <section id="problem" class="py-20 lg:py-32 bg-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-reico-alge mb-8">
+                Kennst du das?
+            </h2>
+            
+            <div class="grid md:grid-cols-3 gap-6 mb-12">
+                <div class="p-6 bg-reico-light rounded-2xl border border-reico-kalk/50">
+                    <div class="w-12 h-12 bg-reico-chlorophyll rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">😩</div>
+                    <p class="font-semibold text-reico-alge">Unzufrieden im Job</p>
+                    <p class="text-sm text-reico-text/60 mt-2">Montagmorgen ist die Hölle. Du fühlst dich nicht wertgeschätzt.</p>
+                </div>
+                
+                <div class="p-6 bg-reico-light rounded-2xl border border-reico-kalk/50">
+                    <div class="w-12 h-12 bg-reico-chlorophyll rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">⏰</div>
+                    <p class="font-semibold text-reico-alge">Keine Zeit, keine Freiheit</p>
+                    <p class="text-sm text-reico-text/60 mt-2">Immer für andere arbeiten. Keine Zeit für Familie & Hobbys.</p>
+                </div>
+                
+                <div class="p-6 bg-reico-light rounded-2xl border border-reico-kalk/50">
+                    <div class="w-12 h-12 bg-reico-chlorophyll rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">🤷</div>
+                    <p class="font-semibold text-reico-alge">Willst mehr, weißt nicht wie</p>
+                    <p class="text-sm text-reico-text/60 mt-2">Traum von Selbstständigkeit – aber keine Idee, kein Startpunkt.</p>
+                </div>
+            </div>
+            
+            <div class="bg-reico-alge text-white rounded-2xl p-8 md:p-12 relative overflow-hidden">
+                <div class="relative z-10">
+                    <p class="text-xl md:text-2xl font-bold mb-4">
+                        Du willst dein eigenes Ding machen – <br>
+                        aber nicht bei Null anfangen?
+                    </p>
+                    <p class="text-white/80 mb-8 text-lg">
+                        Das ist genau der Punkt, an dem ich vor 8 Jahren stand.
+                    </p>
+                    <a href="https://wa.me/4915678516818?text=Hi%20Cedric,%20ich%20stehe%20am%20gleichen%20Punkt!" 
+                       target="_blank"
+                       class="inline-flex items-center gap-2 bg-white text-reico-alge px-8 py-4 rounded-full font-bold hover:bg-reico-chlorophyll transition-colors">
+                        <span>Ja, genau so geht es mir</span>
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. LÖSUNG SECTION (Dein System) -->
+    <section id="loesung" class="py-20 lg:py-32 bg-reico-chlorophyll/20">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold text-reico-alge mb-4">
+                    Hier ist die Lösung.
+                </h2>
+                <p class="text-xl text-reico-text/70">
+                    Ein fertiges System. Du musst nichts erfinden.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+                <div class="bg-white p-6 rounded-2xl shadow-lg border border-reico-kalk/30 hover-lift">
+                    <div class="w-14 h-14 bg-reico-chlorophyll rounded-xl flex items-center justify-center mb-4">
+                        <i data-lucide="package-check" class="w-7 h-7 text-reico-alge"></i>
+                    </div>
+                    <h3 class="font-bold text-reico-alge mb-2">Fertiges System</h3>
+                    <p class="text-sm text-reico-text/70">Alles vorbereitet. Du startest sofort – ohne Monate Planung.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-2xl shadow-lg border border-reico-kalk/30 hover-lift">
+                    <div class="w-14 h-14 bg-reico-chlorophyll rounded-xl flex items-center justify-center mb-4">
+                        <i data-lucide="box" class="w-7 h-7 text-reico-alge"></i>
+                    </div>
+                    <h3 class="font-bold text-reico-alge mb-2">Kein eigenes Produkt</h3>
+                    <p class="text-sm text-reico-text/70">Premium-Produkte mit 30 Jahren Markterfahrung. Du verkaufst keine Luft.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-2xl shadow-lg border border-reico-kalk/30 hover-lift">
+                    <div class="w-14 h-14 bg-reico-chlorophyll rounded-xl flex items-center justify-center mb-4">
+                        <i data-lucide="truck" class="w-7 h-7 text-reico-alge"></i>
+                    </div>
+                    <h3 class="font-bold text-reico-alge mb-2">Keine Logistik</h3>
+                    <p class="text-sm text-reico-text/70">Kein Lager. Kein Versand. Keine Packstation. Das übernimmt REiCO.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-2xl shadow-lg border border-reico-kalk/30 hover-lift">
+                    <div class="w-14 h-14 bg-reico-chlorophyll rounded-xl flex items-center justify-center mb-4">
+                        <i data-lucide="shield-check" class="w-7 h-7 text-reico-alge"></i>
+                    </div>
+                    <h3 class="font-bold text-reico-alge mb-2">Null Risiko</h3>
+                    <p class="text-sm text-reico-text/70">Nur 83,30 € Start. Keine Abo-Falle. 14 Tage Widerrufsrecht.</p>
+                </div>
+            </div>
+            
+            <!-- Warum REICO (ohne MLM-Vibe) -->
+            <div class="bg-white rounded-3xl p-8 md:p-12 shadow-xl border border-reico-kalk/30">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h3 class="text-2xl font-bold text-reico-alge mb-6">Warum dieses System?</h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-start gap-3">
+                                <div class="w-6 h-6 rounded-full bg-reico-kristall/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <i data-lucide="check" class="w-4 h-4 text-reico-alge"></i>
+                                </div>
+                                <span class="text-reico-text"><strong>30+ Jahre am Markt</strong> – kein Startup-Risiko</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <div class="w-6 h-6 rounded-full bg-reico-kristall/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <i data-lucide="check" class="w-4 h-4 text-reico-alge"></i>
+                                </div>
+                                <span class="text-reico-text"><strong>Familiengeführt</strong> aus dem Allgäu, nicht anonym</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <div class="w-6 h-6 rounded-full bg-reico-kristall/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <i data-lucide="check" class="w-4 h-4 text-reico-alge"></i>
+                                </div>
+                                <span class="text-reico-text"><strong>Echte Verbrauchsprodukte</strong> – tägliche Nachfrage</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <div class="w-6 h-6 rounded-full bg-reico-kristall/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <i data-lucide="check" class="w-4 h-4 text-reico-alge"></i>
+                                </div>
+                                <span class="text-reico-text"><strong>Wiederkehrende Einnahmen</strong> durch Stammkunden</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="bg-reico-light rounded-2xl p-8 text-center">
+                        <div class="text-5xl mb-4">🎯</div>
+                        <p class="text-lg font-semibold text-reico-alge mb-2">Kein "Network Marketing" –</p>
+                        <p class="text-reico-text/70">sondern ein <strong>fertiges Geschäftsmodell</strong>, das du sofort nutzen kannst.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRODUCT GALLERY (New Images) -->
+    <section class="py-20 bg-white">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-reico-alge mb-4">
+                    Produkte für die ganze Familie
+                </h2>
+                <p class="text-lg text-reico-text/70">
+                    Hochwertige Naturprodukte für Mensch und Tier – seit über 30 Jahren.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Dog -->
+                <div class="group relative overflow-hidden rounded-2xl bg-reico-light border border-reico-kalk/50 hover:shadow-xl transition-all duration-300">
+                    <div class="aspect-square overflow-hidden">
+                        <img src="https://huggingface.co/spaces/Hosenboden/deepsite-project-rep9l/resolve/main/images/Hund4.jpg" alt="Hund mit REiCO Produkten" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i data-lucide="dog" class="w-5 h-5 text-reico-kristall"></i>
+                            <h3 class="font-bold text-reico-alge text-lg">Für Hunde</h3>
+                        </div>
+                        <p class="text-sm text-reico-text/70">Premium Futter & Nahrungsergänzung für deinen treuen Begleiter.</p>
+                    </div>
+                </div>
+                
+                <!-- Cat -->
+                <div class="group relative overflow-hidden rounded-2xl bg-reico-light border border-reico-kalk/50 hover:shadow-xl transition-all duration-300">
+                    <div class="aspect-square overflow-hidden">
+                        <img src="https://huggingface.co/spaces/Hosenboden/deepsite-project-rep9l/resolve/main/images/Katze2.jpg" alt="Katze mit REiCO Produkten" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i data-lucide="cat" class="w-5 h-5 text-reico-kristall"></i>
+                            <h3 class="font-bold text-reico-alge text-lg">Für Katzen</h3>
+                        </div>
+                        <p class="text-sm text-reico-text/70">Natürliche Ernährung für gesunde, glückliche Samtpfoten.</p>
+                    </div>
+                </div>
+                
+                <!-- Horse -->
+                <div class="group relative overflow-hidden rounded-2xl bg-reico-light border border-reico-kalk/50 hover:shadow-xl transition-all duration-300">
+                    <div class="aspect-square overflow-hidden">
+                        <img src="https://huggingface.co/spaces/Hosenboden/deepsite-project-rep9l/resolve/main/images/Pferd3.jpg" alt="Pferd mit REiCO Produkten" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i data-lucide="heart" class="w-5 h-5 text-reico-kristall"></i>
+                            <h3 class="font-bold text-reico-alge text-lg">Für Pferde</h3>
+                        </div>
+                        <p class="text-sm text-reico-text/70">Spezialprodukte für Pferdegesundheit und -leistung.</p>
+                    </div>
+                </div>
+                
+                <!-- People/Family -->
+                <div class="group relative overflow-hidden rounded-2xl bg-reico-light border border-reico-kalk/50 hover:shadow-xl transition-all duration-300">
+                    <div class="aspect-square overflow-hidden">
+                        <img src="https://huggingface.co/spaces/Hosenboden/deepsite-project-rep9l/resolve/main/images/Mensch3.jpg" alt="Familie mit REiCO Produkten" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i data-lucide="heart" class="w-5 h-5 text-reico-kristall"></i>
+                            <h3 class="font-bold text-reico-alge text-lg">Für Menschen</h3>
+                        </div>
+                        <p class="text-sm text-reico-text/70">Nahrungsergänzung & Naturkosmetik für dich und deine Familie.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 text-center">
+                <a href="https://wa.me/4915678516818?text=Hi%20Cedric,%20erzähl%20mir%20mehr%20über%20die%20Produkte!" 
+                   target="_blank"
+                   class="whatsapp-btn inline-flex items-center gap-2 text-white px-8 py-4 rounded-full font-bold shadow-lg hover:scale-105 transition-transform">
+                    <i data-lucide="message-circle" class="w-5 h-5"></i>
+                    <span>Mehr zu den Produkten erfahren</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. EINWÄNDE ZERSTÖREN -->
+    <section class="py-20 bg-reico-light">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl md:text-4xl font-bold text-reico-alge text-center mb-12">
+                Du hast Fragen? Ich habe Antworten.
+            </h2>
+            
+            <div class="space-y-4">
+                <details class="group bg-reico-light rounded-2xl p-6 cursor-pointer border border-reico-kalk hover:border-reico-alge/30 transition-all">
+                    <summary class="flex justify-between items-center font-bold text-reico-alge list-none text-lg">
+                        <span>🤔 Ist das ein Schneeballsystem?</span>
+                        <span class="transition group-open:rotate-180"><i data-lucide="chevron-down" class="w-6 h-6"></i></span>
+                    </summary>
+                    <div class="mt-4 pt-4 border-t border-reico-kalk text-reico-text/80">
+                        <p class="mb-2"><strong>Nein.</strong> Es geht um echte Produkte (Nahrungsergänzung, Tierfutter, Naturkosmetik), die täglich gekauft und konsumiert werden.</p>
+                        <p>Es gibt kein "Geld-Weiterreichen-System" – du verdienst durch Produktverkäufe, nicht durch Eintrittsgebühren anderer.</p>
+                    </div>
+                </details>
+                
+                <details class="group bg-reico-light rounded-2xl p-6 cursor-pointer border border-reico-kalk hover:border-reico-alge/30 transition-all">
+                    <summary class="flex justify-between items-center font-bold text-reico-alge list-none text-lg">
+                        <span>😰 Muss ich Leute nerven oder verkaufen?</span>
+                        <span class="transition group-open:rotate-180"><i data-lucide="chevron-down" class="w-6 h-6"></i></span>
+                    </summary>
+                    <div class="mt-4 pt-4 border-t border-reico-kalk text-reico-text/80">
+                        <p class="mb-2"><strong>Nein.</strong> Du arbeitest mit Menschen, die <strong>Interesse haben</strong> – nicht mit Druck oder Zwang.</p>
+                        <p>Die Produkte verkaufen sich durch Qualität. Du teilst Erfahrungen, nicht Kataloge.</p>
+                    </div>
+                </details>
+                
+                <details class="group bg-reico-light rounded-2xl p-6 cursor-pointer border border-reico-kalk hover:border-reico-alge/30 transition-all">
+                    <summary class="flex justify-between items-center font-bold text-reico-alge list-none text-lg">
+                        <span>💪 Funktioniert das wirklich?</span>
+                        <span class="transition group-open:rotate-180"><i data-lucide="chevron-down" class="w-6 h-6"></i></span>
+                    </summary>
+                    <div class="mt-4 pt-4 border-t border-reico-kalk text-reico-text/80">
+                        <p class="mb-2"><strong>Ja – wenn du es umsetzt.</strong></p>
+                        <p>Es ist kein "Werde reich im Schlaf". Es ist echte Arbeit mit echten Produkten. Aber: Du musst nichts erfinden, alles ist vorbereitet. Ich zeige dir genau, wie ich es geschafft habe – von nebenbei zu hauptberuflich.</p>
+                    </div>
+                </details>
+                
+                <details class="group bg-reico-light rounded-2xl p-6 cursor-pointer border border-reico-kalk hover:border-reico-alge/30 transition-all">
+                    <summary class="flex justify-between items-center font-bold text-reico-alge list-none text-lg">
+                        <span>⏳ Wie viel Zeit muss ich investieren?</span>
+                        <span class="transition group-open:rotate-180"><i data-lucide="chevron-down" class="w-6 h-6"></i></span>
+                    </summary>
+                    <div class="mt-4 pt-4 border-t border-reico-kalk text-reico-text/80">
+                        <p class="mb-2"><strong>Das bestimmst du.</strong></p>
+                        <p>Viele starten mit 5-10 Stunden pro Woche neben dem Job. Du entscheidest, wann und wie viel. Flexibel. Kein Chef. Keine fixen Zeiten.</p>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. DEINE STORY (Vertrauen) -->
+    <section class="py-20 lg:py-32 bg-reico-alge text-white relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-0 right-0 w-96 h-96 bg-reico-chlorophyll rounded-full blur-3xl"></div>
+        </div>
+        
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 mb-6">
+                        <i data-lucide="user-check" class="w-4 h-4"></i>
+                        <span class="text-sm font-medium">Dein persönlicher Partner</span>
+                    </div>
+                    
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6">
+                        Ich habe genau dort gestartet, wo du jetzt stehst.
+                    </h2>
+                    
+                    <div class="space-y-4 text-white/90 text-lg">
+                        <p>
+                            Vor 8 Jahren war ich unzufrieden im Job. Wollte mehr. Wusste aber nicht wie.
+                        </p>
+                        <p>
+                            Dann entdeckte ich dieses System. Startete <strong>nebenberuflich</strong> – ohne Risiko, ohne Druck.
+                        </p>
+                        <p>
+                            Heute bin ich <strong>hauptberuflich selbstständig</strong>. Das war die beste Entscheidung meines Lebens.
+                        </p>
+                    </div>
+                    
+                    <div class="mt-8 p-6 bg-white/10 rounded-2xl border border-white/20">
+                        <p class="text-white/80 text-sm mb-3">Das läuft im Hintergrund:</p>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="px-3 py-1 bg-white/20 rounded-full text-sm">Über 1000 Partner im Team</span>
+                            <span class="px-3 py-1 bg-white/20 rounded-full text-sm">8 Jahre Erfahrung</span>
+                            <span class="px-3 py-1 bg-white/20 rounded-full text-sm">Von 0 auf Vollzeit</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20">
+                    <div class="text-center mb-8">
+                        <div class="w-32 h-32 rounded-full mx-auto mb-4 overflow-hidden border-4 border-reico-chlorophyll shadow-xl bg-reico-chlorophyll flex items-center justify-center text-reico-alge text-4xl font-bold relative group" id="profile-container">
+                            <img src="https://huggingface.co/spaces/Hosenboden/deepsite-project-rep9l/resolve/main/images/IMG_0370.JPEG" alt="Cedric Nitsch" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-reico-alge/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full"></div>
+                        </div>
+                        <h3 class="text-2xl font-bold">Ich bin Cedric</h3>
+                        <p class="text-white/70">und ich begleite dich.</p>
+                    </div>
+                    
+                    <a href="https://wa.me/4915678516818?text=Hi%20Cedric,%20erzähl%20mir%20mehr%20von%20deinem%20Weg!" 
+                       target="_blank"
+                       class="whatsapp-btn w-full text-white px-6 py-4 rounded-full font-bold shadow-lg flex items-center justify-center gap-2">
+                        <i data-lucide="message-circle" class="w-5 h-5"></i>
+                        <span>Schreib mir deine Geschichte</span>
+                    </a>
+                    
+                    <p class="text-center text-white/60 text-sm mt-4">
+                        Ich antworte persönlich innerhalb von 2 Stunden.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. EINFACH STARTEN (5 Steps) -->
+    <section id="einfach" class="py-20 lg:py-32 bg-reico-chlorophyll/20">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-reico-alge mb-4">
+                    So einfach startest du.
+                </h2>
+                <p class="text-xl text-reico-text/70">Keine Komplexität. Kein Chaos. 5 klare Schritte.</p>
+            </div>
+            
+            <div class="space-y-6">
+                <!-- Step 1 -->
+                <div class="flex gap-4 items-start bg-white p-6 rounded-2xl shadow-md border border-reico-kalk/30">
+                    <div class="w-12 h-12 bg-reico-kristall text-reico-alge rounded-full flex items-center justify-center font-bold text-xl flex-shrink-0">1</div>
+                    <div>
+                        <h3 class="font-bold text-reico-alge text-lg mb-1">Schreib mir bei WhatsApp</h3>
+                        <p class="text-reico-text/70">Einfach "Hi" schicken. Ich antworte persönlich und unverbindlich.</p>
+                    </div>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="flex gap-4 items-start bg-white p-6 rounded-2xl shadow-md border border-reico-kalk/30">
+                    <div class="w-12 h-12 bg-reico-kristall text-reico-alge rounded-full flex items-center justify-center font-bold text-xl flex-shrink-0">2</div>
+                    <div>
+                        <h3 class="font-bold text-reico-alge text-lg mb-1">Du bekommst deinen Zugang</h3>
+                        <p class="text-reico-text/70">Starterpaket (83,30 €) mit allen Materialien + Online-Zugang sofort.</p>
+                    </div>
+                </div>
+                
+                <!-- Step 3 -->
+                <div class="flex gap-4 items-start bg-white p-6 rounded-2xl shadow-md border border-reico-kalk/30">
+                    <div class="w-12 h-12 bg-reico-kristall text-reico-alge rounded-full flex items-center justify-center font-bold text-xl flex-shrink-0">3</div>
+                    <div>
+                        <h3 class="font-bold text-reico-alge text-lg mb-1">Starte mit der Schulung</h3>
+                        <p class="text-reico-text/70">Online-Kurse + meine persönliche Einarbeitung. Du lernst alles Schritt für Schritt.</p>
+                    </div>
+                </div>
+                
+                <!-- Step 4 -->
+                <div class="flex gap-4 items-start bg-white p-6 rounded-2xl shadow-md border border-reico-kalk/30">
+                    <div class="w-12 h-12 bg-reico-kristall text-reico-alge rounded-full flex items-center justify-center font-bold text-xl flex-shrink-0">4</div>
+                    <div>
+                        <h3 class="font-bold text-reico-alge text-lg mb-1">Erste Schritte: Content & Kunden</h3>
+                        <p class="text-reico-text/70">Ich zeige dir, wie du startest – ohne komisches Verkaufen. Authentisch. Einfach.</p>
+                    </div>
+                </div>
+                
+                <!-- Step 5 -->
+                <div class="flex gap-4 items-start bg-reico-alge text-white p-6 rounded-2xl shadow-lg">
+                    <div class="w-12 h-12 bg-reico-kristall text-reico-alge rounded-full flex items-center justify-center font-bold text-xl flex-shrink-0">5</div>
+                    <div>
+                        <h3 class="font-bold text-lg mb-1">Ich begleite dich auf dem Weg</h3>
+                        <p class="text-white/80">Du bist nicht allein. Bei Fragen, Zweifeln, Erfolgen – ich bin für dich da.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 text-center">
+                <a href="https://wa.me/4915678516818?text=Hi%20Cedric,%20ich%20will%20starten!" 
+                   target="_blank"
+                   class="whatsapp-btn inline-flex items-center gap-3 text-white px-10 py-5 rounded-full text-xl font-bold shadow-2xl hover:scale-105 transition-transform">
+                    <i data-lucide="rocket" class="w-6 h-6"></i>
+                    <span>Jetzt Schritt 1 machen</span>
+                </a>
+                <p class="mt-4 text-reico-text/60 text-sm">Dauer: 2 Minuten. Keine Kosten für die erste Info.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. FINAL CTA -->
+    <section class="py-20 bg-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl md:text-5xl font-bold text-reico-alge mb-6">
+                Bereit für den nächsten Schritt?
+            </h2>
+            
+            <p class="text-xl text-reico-text/70 mb-8 max-w-2xl mx-auto">
+                Schreib mir jetzt bei WhatsApp. Ich schicke dir alle Infos direkt zu – 
+                unverbindlich und persönlich.
+            </p>
+            
+            <div class="flex flex-col items-center gap-4 mb-12">
+                <a href="https://wa.me/4915678516818?text=Hi%20Cedric,%20ich%20will%20mehr%20erfahren!" 
+                   target="_blank"
+                   class="whatsapp-btn text-white px-10 py-6 rounded-full text-2xl font-bold shadow-2xl flex items-center gap-4 hover:scale-105 transition-transform w-full sm:w-auto justify-center">
+                    <i data-lucide="message-circle" class="w-8 h-8"></i>
+                    <span>WhatsApp: +49 15678 516 818</span>
+                </a>
+                
+                <p class="text-reico-text/50 text-sm">
+                    <i data-lucide="clock" class="w-4 h-4 inline mr-1"></i>
+                    Antwort garantiert innerhalb 2 Stunden
+                </p>
+            </div>
+            
+            <div class="grid sm:grid-cols-3 gap-6 text-left max-w-3xl mx-auto">
+                <div class="flex items-center gap-3 text-reico-text/70">
+                    <i data-lucide="check-circle" class="w-5 h-5 text-green-500 flex-shrink-0"></i>
+                    <span class="text-sm">100% unverbindlich</span>
+                </div>
+                <div class="flex items-center gap-3 text-reico-text/70">
+                    <i data-lucide="check-circle" class="w-5 h-5 text-green-500 flex-shrink-0"></i>
+                    <span class="text-sm">Keine versteckten Kosten</span>
+                </div>
+                <div class="flex items-center gap-3 text-reico-text/70">
+                    <i data-lucide="check-circle" class="w-5 h-5 text-green-500 flex-shrink-0"></i>
+                    <span class="text-sm">Persönliche Betreuung</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-reico-alge text-white py-12 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-2">Cedric Nitsch</h3>
+                    <p class="text-white/60 text-sm">Selbstständiger Vertriebspartner</p>
+                    <p class="text-xs text-white/40 mt-4">
+                        Diese Webseite wird betrieben von einem selbstständigen Vertriebspartner der REiCO & Partner Vertriebs GmbH.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4 text-reico-chlorophyll">Schnellkontakt</h4>
+                    <a href="https://wa.me/4915678516818" target="_blank" class="flex items-center gap-2 text-white/80 hover:text-white mb-2">
+                        <i data-lucide="message-circle" class="w-4 h-4"></i>
+                        WhatsApp
+                    </a>
+                    <a href="mailto:info@cedricnitsch.de" class="flex items-center gap-2 text-white/80 hover:text-white mb-2">
+                        <i data-lucide="mail" class="w-4 h-4"></i>
+                        info@cedricnitsch.de
+                    </a>
+                    <a href="https://reico-vital.com/de/vp/cedric.nitsch" target="_blank" class="flex items-center gap-2 text-white/80 hover:text-white">
+                        <i data-lucide="external-link" class="w-4 h-4"></i>
+                        Meine REiCO Seite
+                    </a>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4 text-reico-chlorophyll">Rechtliches</h4>
+                    <ul class="space-y-2 text-sm text-white/70">
+                        <li><a href="impressum.html" class="hover:text-white">Impressum</a></li>
+                        <li><a href="datenschutz.html" class="hover:text-white">Datenschutz</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-white/10 pt-8 text-center">
+                <p class="text-sm text-white/40">&copy; 2026 Cedric Nitsch. Alle Rechte vorbehalten.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+        
+        // Mobile Menu
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+        btn.addEventListener('click', () => menu.classList.toggle('hidden'));
+        
+        // Navbar Shadow
+        const nav = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) nav.classList.add('shadow-md');
+            else nav.classList.remove('shadow-md');
+        });
+    </script>
+</body>
+</html>
