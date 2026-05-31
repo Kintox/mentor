@@ -49,6 +49,8 @@
     </script>
     
     <style>
+        /* Prevent horizontal overflow on all devices */
+        html, body { overflow-x: hidden; max-width: 100vw; }
         .smooth-scroll { scroll-behavior: smooth; }
         .hover-lift {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -183,74 +185,74 @@
     <!-- ============================================ -->
     <!-- 1. HERO SECTION – Optimiert für Tier + Business -->
     <!-- ============================================ -->
-    <section class="relative pt-32 pb-20 lg:pt-40 lg:pb-32 bg-reico-chlorophyll/30 overflow-hidden">
+    <section class="relative pt-32 pb-20 lg:pt-40 lg:pb-32 bg-reico-chlorophyll/30 overflow-x-hidden">
         <div class="absolute inset-0 bg-gradient-to-br from-reico-chlorophyll/50 via-transparent to-reico-kalk/30"></div>
         
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="grid lg:grid-cols-2 gap-12 items-center">
-                <!-- Text Content -->
-                <div class="text-center lg:text-left order-1">
-                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-reico-alge/10 shadow-sm mb-8">
+            <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+                <!-- Text Content (erscheint auf Desktop links, auf Mobile oben) -->
+                <div class="text-center lg:text-left order-1 lg:order-1 min-w-0">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-reico-alge/10 shadow-sm mb-6 sm:mb-8">
                         <span class="flex h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
                         <span class="text-sm font-semibold text-reico-alge">Kostenloser Futtercheck – Jetzt sichern</span>
                     </div>
                     
                     <!-- Emotionalere Headline mit Tier-Fokus -->
-                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-reico-alge leading-tight mb-6">
+                    <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-reico-alge leading-tight mb-4 sm:mb-6">
                         Dein Hund verdient <br>
                         <span class="text-reico-kristall">das Beste.</span>
                     </h1>
                     
                     <!-- Subheadline mit konkretem Nutzenversprechen -->
-                    <p class="text-xl md:text-2xl text-reico-text/80 max-w-2xl mx-auto lg:mx-0 mb-4 font-medium">
+                    <p class="text-lg sm:text-xl md:text-2xl text-reico-text/80 mx-auto lg:mx-0 mb-4 font-medium">
                         Erfahre, wie du mit artgerechter Tiernahrung die Gesundheit deines Vierbeiners verbesserst – <span class="text-reico-alge font-bold">und dir ein flexibles Einkommen aufbaust.</span>
                     </p>
                     
-                    <p class="text-lg text-reico-text/60 max-w-xl mx-auto lg:mx-0 mb-10">
+                    <p class="text-base sm:text-lg text-reico-text/60 mx-auto lg:mx-0 mb-8 sm:mb-10">
                         Ohne Risiko. Ohne Vorkenntnisse. Ab 83,30 €/Jahr.
                     </p>
                     
                     <!-- Haupt-CTA: Futtercheck + sekundärer WhatsApp -->
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center mb-12">
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center sm:items-stretch mb-8 sm:mb-12">
                         <a href="#futtercheck" 
-                           class="cta-primary text-white px-8 py-4 rounded-full text-lg font-bold shadow-xl flex items-center gap-3 hover:scale-105 transition-transform whitespace-nowrap">
+                           class="cta-primary text-white px-6 sm:px-8 py-4 rounded-full text-base sm:text-lg font-bold shadow-xl flex items-center gap-3 hover:scale-105 transition-transform text-center justify-center w-full sm:w-auto">
                             <span>🐾</span>
-                            <span>Jetzt kostenlosen Futtercheck sichern</span>
+                            <span>Kostenlosen Futtercheck sichern</span>
                         </a>
                         <a href="https://wa.me/4915678516818?text=Hi%20Cedric,%20ich%20interessiere%20mich%20für%20den%20Futtercheck!" 
                            target="_blank"
-                           class="whatsapp-btn text-white px-6 py-4 rounded-full text-base font-bold shadow-lg flex items-center gap-2 whitespace-nowrap">
-                            <i data-lucide="message-circle" class="w-5 h-5"></i>
+                           class="whatsapp-btn text-white px-6 py-4 rounded-full text-base font-bold shadow-lg flex items-center gap-2 justify-center w-full sm:w-auto">
+                            <i data-lucide="message-circle" class="w-5 h-5 flex-shrink-0"></i>
                             <span>Oder per WhatsApp</span>
                         </a>
                     </div>
                     
                     <!-- Trust-Elemente -->
-                    <div class="flex flex-wrap justify-center lg:justify-start gap-6 text-sm text-reico-alge/70 font-medium">
+                    <div class="flex flex-wrap justify-center lg:justify-start gap-x-5 gap-y-3 text-sm text-reico-alge/70 font-medium">
                         <div class="flex items-center gap-2">
-                            <i data-lucide="check-circle" class="w-5 h-5 text-green-600"></i>
+                            <i data-lucide="check-circle" class="w-5 h-5 text-green-600 flex-shrink-0"></i>
                             <span>100% kostenlos</span>
                         </div>
                         <div class="flex items-center gap-2">
-                            <i data-lucide="check-circle" class="w-5 h-5 text-green-600"></i>
+                            <i data-lucide="check-circle" class="w-5 h-5 text-green-600 flex-shrink-0"></i>
                             <span>DSGVO-konform</span>
                         </div>
                         <div class="flex items-center gap-2">
-                            <i data-lucide="check-circle" class="w-5 h-5 text-green-600"></i>
+                            <i data-lucide="check-circle" class="w-5 h-5 text-green-600 flex-shrink-0"></i>
                             <span>Kein Spam</span>
                         </div>
                         <div class="flex items-center gap-2">
-                            <i data-lucide="check-circle" class="w-5 h-5 text-green-600"></i>
+                            <i data-lucide="check-circle" class="w-5 h-5 text-green-600 flex-shrink-0"></i>
                             <span>Persönliche Beratung</span>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Hero Image -->
-                <div class="relative order-2 lg:order-1">
-                    <div class="relative mx-auto max-w-lg lg:max-w-full">
+                <!-- Hero Image (erscheint auf Desktop rechts, auf Mobile unten) -->
+                <div class="relative order-2 lg:order-2">
+                    <div class="relative mx-auto max-w-sm sm:max-w-lg lg:max-w-full">
                         <img src="images/Hund2.jpg" alt="Glücklicher, gesunder Hund mit glänzendem Fell dank artgerechter Reico Ernährung" class="w-full h-auto rounded-2xl shadow-2xl object-cover" loading="eager">
-                        <div class="absolute -bottom-4 -right-4 bg-reico-kristall text-reico-alge px-4 py-2 rounded-full text-sm font-bold shadow-lg stats-badge">
+                        <div class="absolute -bottom-3 right-0 sm:-bottom-4 sm:-right-2 bg-reico-kristall text-reico-alge px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-bold shadow-lg stats-badge">
                             🐾 Über 8.500 zufriedene Partner
                         </div>
                     </div>
