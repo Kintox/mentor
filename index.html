@@ -144,8 +144,20 @@
             accent-color: #FF9888 !important;
         }
         
-        /* Brevo-Nachrichtenfelder */
-        .sib-form-message-panel { text-align: left !important; padding: 0 !important; }
+        /* Brevo-Nachrichtenfelder – Border/Outline von sib-styles.css entfernen */
+        .sib-form-message-panel {
+            text-align: left !important;
+            padding: 0 !important;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
+        }
+        .sib-form-message-panel--active {
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+        }
         .smooth-scroll { scroll-behavior: smooth; }
         .hover-lift {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
