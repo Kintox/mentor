@@ -25,6 +25,9 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     
+    <!-- Brevo Forms CSS (benötigt für Formular-Validierung) -->
+    <link rel="stylesheet" href="https://sibforms.com/forms/end-form/build/sib-styles.css">
+    
     <script>
         tailwind.config = {
             theme: {
@@ -51,6 +54,98 @@
     <style>
         /* Prevent horizontal overflow on all devices */
         html, body { overflow-x: hidden; max-width: 100vw; }
+        
+        /* ============================================ */
+        /* Brevo Form Style-Overrides                   */
+        /* Verhindert, dass Brevo-Standard-CSS unser    */
+        /* Tailwind-Design überschreibt                 */
+        /* ============================================ */
+        /* Container-Resets */
+        .sib-form { padding: 0 !important; background: transparent !important; }
+        .sib-form-container { padding: 0 !important; background: transparent !important; border: none !important; }
+        #sib-container { padding: 0 !important; background: transparent !important; }
+        #sib-form { padding: 0 !important; }
+        
+        /* Brevo überschreibt Font – hier erzwingen wir Poppins */
+        .sib-form, .sib-form *, #sib-form * {
+            font-family: 'Poppins', sans-serif !important;
+        }
+        
+        /* Brevo Input/Select/Textarea Overrides – erzwingt unsere Tailwind-Klassen */
+        #sib-form .form-input {
+            appearance: none !important;
+            -webkit-appearance: none !important;
+            padding: 0.75rem 1rem !important;
+            border-radius: 0.75rem !important;
+            border: 2px solid #EAE2D5 !important;
+            background-color: #FAFAF8 !important;
+            color: #2C2C2C !important;
+            font-size: 1rem !important;
+            line-height: 1.5 !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+            outline: none !important;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+        }
+        #sib-form .form-input:focus {
+            border-color: #FF9888 !important;
+            box-shadow: 0 0 0 3px rgba(255, 152, 136, 0.2) !important;
+        }
+        #sib-form .form-input::placeholder {
+            color: rgba(44, 44, 44, 0.4) !important;
+        }
+        /* Dropdown-Pfeil für Select */
+        #sib-form select.form-input {
+            background-repeat: no-repeat !important;
+            background-position: right 0.75rem center !important;
+            padding-right: 2.5rem !important;
+        }
+        /* Ländercode-Select – schmalere Breite */
+        #sib-form select.country-select {
+            width: 7rem !important;
+            flex-shrink: 0 !important;
+            padding-left: 0.5rem !important;
+            font-size: 0.875rem !important;
+        }
+        
+        /* Brevo Submit Button Override – erzwingt unseren CTA-Style */
+        #sib-form button[type="submit"],
+        #sib-form .sib-form-block__button {
+            background: linear-gradient(135deg, #FF9888 0%, #e07868 100%) !important;
+            color: white !important;
+            padding: 1rem 2rem !important;
+            border-radius: 0.75rem !important;
+            font-size: 1.125rem !important;
+            font-weight: 700 !important;
+            box-shadow: 0 20px 25px -5px rgba(255, 152, 136, 0.3) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 0.75rem !important;
+            width: 100% !important;
+            cursor: pointer !important;
+            border: none !important;
+            margin-top: 0.5rem !important;
+            transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+        }
+        #sib-form button[type="submit"]:hover {
+            transform: scale(1.05) !important;
+            box-shadow: 0 10px 30px -5px rgba(255, 152, 136, 0.5) !important;
+        }
+        
+        /* Brevo Checkbox Override */
+        #sib-form input[type="checkbox"] {
+            width: 1.25rem !important;
+            height: 1.25rem !important;
+            border-radius: 0.25rem !important;
+            cursor: pointer !important;
+            flex-shrink: 0 !important;
+            margin-top: 0.25rem !important;
+            accent-color: #FF9888 !important;
+        }
+        
+        /* Brevo-Nachrichtenfelder */
+        .sib-form-message-panel { text-align: left !important; padding: 0 !important; }
         .smooth-scroll { scroll-behavior: smooth; }
         .hover-lift {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -318,64 +413,98 @@
                     
                     <!-- ============================================ -->
                     <!-- OPT-IN FORMULAR                              -->
-                    <!-- Backend: Web3Forms (kostenlos, DSGVO-konform) -->
-                    <!-- KONFIGURATION: Ersetze den Access Key mit    -->
-                    <!-- deinem eigenen von https://web3forms.com      -->
+                    <!-- Backend: Brevo (Double-Opt-in, DSGVO-konform)-->
+                    <!-- Brevo-Formulardaten werden direkt in Brevo   -->
+                    <!-- gespeichert und lösen die E-Mail-Automation  -->
+                    <!-- aus (5-E-Mail-Sequenz).                      -->
                     <!-- ============================================ -->
-                    <form id="lead-form" action="https://api.web3forms.com/submit" method="POST" class="space-y-4">
-                        <!-- Web3Forms Access Key – HIER DEINEN KEY EINTRAGEN -->
-                        <input type="hidden" name="access_key" value="6efb3b6c-265b-45ce-b73f-efa3d8a48457">
-                        <!-- Weiterleitung zur Danke-Seite nach Absenden -->
-                        <input type="hidden" name="redirect" value="https://cedricnitsch.de/danke.html">
-                        <!-- Betreff der E-Mail -->
-                        <input type="hidden" name="subject" value="Neuer Futtercheck Lead von der Website">
-                        <!-- Honeypot Anti-Spam -->
-                        <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
-                        
-                        <div>
-                            <label for="vorname" class="block text-sm font-semibold text-reico-alge mb-1">Vorname *</label>
-                            <input type="text" id="vorname" name="vorname" required placeholder="Dein Vorname"
-                                   class="form-input w-full px-4 py-3 rounded-xl border-2 border-reico-kalk bg-reico-light text-reico-text placeholder-reico-text/40 transition-all">
+                    <div class="sib-form">
+                        <div id="sib-form-container" class="sib-form-container">
+                            <!-- Fehlermeldung (Brevo – gestylt im Website-Design) -->
+                            <div id="error-message" class="sib-form-message-panel" style="display:none;">
+                                <div class="flex items-center gap-3 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-4">
+                                    <span class="text-lg">❌</span>
+                                    <span class="sib-form-message-panel__inner-text text-sm font-medium">Deine Anmeldung konnte nicht gespeichert werden. Bitte versuche es erneut.</span>
+                                </div>
+                            </div>
+                            <!-- Erfolgsmeldung (Brevo – gestylt im Website-Design) -->
+                            <div id="success-message" class="sib-form-message-panel" style="display:none;">
+                                <div class="flex items-center gap-3 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl mb-4">
+                                    <span class="text-lg">✅</span>
+                                    <span class="sib-form-message-panel__inner-text text-sm font-medium">Deine Anmeldung war erfolgreich! Prüfe dein Postfach für die Bestätigungsmail.</span>
+                                </div>
+                            </div>
+
+                            <div id="sib-container">
+                                <form id="sib-form" method="POST" 
+                                      action="https://527052f3.sibforms.com/serve/MUIFAEsoUsu2lQEwZbEGWqu3v6u9wL2SIPPUymK-A_Vc0QPh5brKiyc__E3MTjN9YYhO3Tqv-YtqYTJeAH6h3IV0Mt5ECrXtrWv73icuhdF0rgKNrVbQDxNTrQLccP0-cvUBbw9TcGjJobMlR1757jpWbQmfb6FPlxkFczQhk0UQ5mCi5IIPD5GZPTV7gIyGgCy2PSFGJ-ObCxEZ1g=="
+                                      data-type="subscription"
+                                      class="space-y-4">
+                                    
+                                    <!-- Brevo Hidden Fields -->
+                                    <input type="text" name="email_address_check" value="" style="display:none !important;">
+                                    <input type="hidden" name="locale" value="de">
+                                    
+                                    <!-- Vorname -->
+                                    <div>
+                                        <label for="VORNAME" class="block text-sm font-semibold text-reico-alge mb-1">Vorname *</label>
+                                        <input type="text" id="VORNAME" name="VORNAME" required placeholder="Dein Vorname" autocomplete="given-name"
+                                               class="form-input w-full px-4 py-3 rounded-xl border-2 border-reico-kalk bg-reico-light text-reico-text placeholder-reico-text/40 transition-all">
+                                    </div>
+                                    
+                                    <!-- E-Mail -->
+                                    <div>
+                                        <label for="EMAIL" class="block text-sm font-semibold text-reico-alge mb-1">E-Mail-Adresse *</label>
+                                        <input type="email" id="EMAIL" name="EMAIL" required placeholder="deine@email.de" autocomplete="email"
+                                               class="form-input w-full px-4 py-3 rounded-xl border-2 border-reico-kalk bg-reico-light text-reico-text placeholder-reico-text/40 transition-all">
+                                    </div>
+                                    
+                                    <!-- WhatsApp/SMS mit Ländercode -->
+                                    <div>
+                                        <label for="SMS" class="block text-sm font-semibold text-reico-alge mb-1">WhatsApp-Nummer <span class="text-reico-text/40 font-normal">(optional)</span></label>
+                                        <div class="flex gap-2">
+                                            <select name="SMS__COUNTRY_CODE" aria-label="Ländervorwahl"
+                                                    class="form-input country-select w-28 flex-shrink-0 px-2 py-3 rounded-xl border-2 border-reico-kalk bg-reico-light text-reico-text text-sm transition-all">
+                                                <option value="+49">🇩🇪 +49</option>
+                                                <option value="+43">🇦🇹 +43</option>
+                                                <option value="+41">🇨🇭 +41</option>
+                                                <option value="+352">🇱🇺 +352</option>
+                                                <option value="+31">🇳🇱 +31</option>
+                                                <option value="+32">🇧🇪 +32</option>
+                                                <option value="+39">🇮🇹 +39</option>
+                                                <option value="+33">🇫🇷 +33</option>
+                                                <option value="+48">🇵🇱 +48</option>
+                                                <option value="+45">🇩🇰 +45</option>
+                                            </select>
+                                            <input type="tel" id="SMS" name="SMS" placeholder="z.B. 1567 8516818" autocomplete="tel-national"
+                                                   class="form-input w-full px-4 py-3 rounded-xl border-2 border-reico-kalk bg-reico-light text-reico-text placeholder-reico-text/40 transition-all">
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- DSGVO-konforme Checkbox -->
+                                    <div class="flex items-start gap-3">
+                                        <input type="checkbox" id="dsgvo-brevo" required
+                                               class="mt-1 w-5 h-5 rounded border-reico-kalk text-reico-kristall focus:ring-reico-kristall cursor-pointer flex-shrink-0">
+                                        <label for="dsgvo-brevo" class="text-xs text-reico-text/60 cursor-pointer">
+                                            Ich stimme der Verarbeitung meiner Daten gemäß der 
+                                            <a href="datenschutz.html" target="_blank" class="underline text-reico-alge hover:text-reico-kristall">Datenschutzerklärung</a> 
+                                            zu. Du erhältst eine Bestätigungsmail (Double-Opt-in). Ich kann meine Einwilligung jederzeit widerrufen. *
+                                        </label>
+                                    </div>
+                                    
+                                    <!-- Submit Button -->
+                                    <button type="submit" form="sib-form"
+                                            class="cta-primary w-full text-white px-8 py-4 rounded-xl text-lg font-bold shadow-xl flex items-center justify-center gap-3 mt-2">
+                                        <span>🐾 Kostenlosen Futtercheck anfordern</span>
+                                    </button>
+                                    
+                                    <p class="text-center text-xs text-reico-text/40 mt-2">
+                                        ✅ 100 % kostenlos · ✅ Kein Spam · ✅ Jederzeit abmeldbar
+                                    </p>
+                                </form>
+                            </div>
                         </div>
-                        
-                        <div>
-                            <label for="email" class="block text-sm font-semibold text-reico-alge mb-1">E-Mail-Adresse *</label>
-                            <input type="email" id="email" name="email" required placeholder="deine@email.de"
-                                   class="form-input w-full px-4 py-3 rounded-xl border-2 border-reico-kalk bg-reico-light text-reico-text placeholder-reico-text/40 transition-all">
-                        </div>
-                        
-                        <div>
-                            <label for="tierart" class="block text-sm font-semibold text-reico-alge mb-1">Tierart / Hunderasse <span class="text-reico-text/40 font-normal">(optional)</span></label>
-                            <select id="tierart" name="tierart"
-                                    class="form-input w-full px-4 py-3 rounded-xl border-2 border-reico-kalk bg-reico-light text-reico-text transition-all">
-                                <option value="">Bitte wählen...</option>
-                                <option value="Hund">🐕 Hund</option>
-                                <option value="Katze">🐱 Katze</option>
-                                <option value="Pferd">🐴 Pferd</option>
-                                <option value="Mehrere Tiere">🐾 Mehrere Tiere</option>
-                            </select>
-                        </div>
-                        
-                        <!-- DSGVO-konforme Checkbox -->
-                        <div class="flex items-start gap-3">
-                            <input type="checkbox" id="dsgvo" name="dsgvo_einwilligung" required
-                                   class="mt-1 w-5 h-5 rounded border-reico-kalk text-reico-kristall focus:ring-reico-kristall cursor-pointer flex-shrink-0">
-                            <label for="dsgvo" class="text-xs text-reico-text/60 cursor-pointer">
-                                Ich stimme der Verarbeitung meiner Daten gemäß der 
-                                <a href="datenschutz.html" target="_blank" class="underline text-reico-alge hover:text-reico-kristall">Datenschutzerklärung</a> 
-                                zu. Ich kann meine Einwilligung jederzeit widerrufen. *
-                            </label>
-                        </div>
-                        
-                        <button type="submit" id="submit-btn"
-                                class="cta-primary w-full text-white px-8 py-4 rounded-xl text-lg font-bold shadow-xl flex items-center justify-center gap-3 mt-2">
-                            <span>🐾 Kostenlosen Futtercheck anfordern</span>
-                        </button>
-                        
-                        <p class="text-center text-xs text-reico-text/40 mt-2">
-                            ✅ 100 % kostenlos · ✅ Kein Spam · ✅ Jederzeit abmeldbar
-                        </p>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1026,13 +1155,13 @@
         });
 
         // ============================================
-        // Form Submission Handler
+        // BREVO Form Submission Handler
         // Feuert Meta Pixel Lead-Event beim Absenden
         // ============================================
-        const leadForm = document.getElementById('lead-form');
-        if (leadForm) {
-            leadForm.addEventListener('submit', function(e) {
-                // Fire Meta Pixel Lead Event
+        const sibForm = document.getElementById('sib-form');
+        if (sibForm) {
+            sibForm.addEventListener('submit', function(e) {
+                // Fire Meta Pixel Lead Event bei Brevo-Submit
                 if (typeof fbq !== 'undefined') {
                     fbq('track', 'Lead', {
                         content_name: 'Futtercheck',
@@ -1042,5 +1171,24 @@
             });
         }
     </script>
+
+    <!-- ============================================ -->
+    <!-- BREVO Forms JavaScript                       -->
+    <!-- Steuert Validierung, Error/Success Messages  -->
+    <!-- ============================================ -->
+    <script>
+        window.REQUIRED_CODE_ERROR_MESSAGE = 'Wähle bitte eine Ländervorwahl aus.';
+        window.LOCALE = 'de';
+        window.EMAIL_INVALID_MESSAGE = window.SMS_INVALID_MESSAGE = "Die eingegebenen Informationen sind nicht gültig. Bitte überprüfe das Feldformat und versuche es erneut.";
+        window.REQUIRED_ERROR_MESSAGE = "Dieses Feld darf nicht leer sein.";
+        window.GENERIC_INVALID_MESSAGE = "Die eingegebenen Informationen sind nicht gültig. Bitte überprüfe das Feldformat und versuche es erneut.";
+        window.translation = {
+            common: {
+                selectedList: '{quantity} Liste ausgewählt',
+                selectedLists: '{quantity} Listen ausgewählt',
+            }
+        };
+    </script>
+    <script defer src="https://sibforms.com/forms/end-form/build/main.js"></script>
 </body>
 </html>
