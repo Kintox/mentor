@@ -1155,40 +1155,109 @@
         });
 
         // ============================================
-        // BREVO Form Submission Handler
-        // Feuert Meta Pixel Lead-Event beim Absenden
+        // BREVO Form – Custom AJAX Submit Handler
+        // Ersetzt Brevo main.js (inkompatibel mit 
+        // unserem Tailwind-Design wg. fehlender 
+        // .sib-input/.sib-loader Klassen)
         // ============================================
         const sibForm = document.getElementById('sib-form');
         if (sibForm) {
+            sibForm.setAttribute('novalidate', 'true');
+
             sibForm.addEventListener('submit', function(e) {
-                // Fire Meta Pixel Lead Event bei Brevo-Submit
+                e.preventDefault();
+
+                // --- Client-side Validation ---
+                const vorname = sibForm.querySelector('#VORNAME');
+                const email = sibForm.querySelector('#EMAIL');
+                const dsgvo = sibForm.querySelector('#dsgvo-brevo');
+                const errorPanel = document.getElementById('error-message');
+                const successPanel = document.getElementById('success-message');
+                const submitBtn = sibForm.querySelector('button[type="submit"]');
+
+                // Reset previous messages
+                errorPanel.style.display = 'none';
+                successPanel.style.display = 'none';
+
+                // Validate required fields
+                if (!vorname.value.trim()) {
+                    vorname.focus();
+                    showError('Bitte gib deinen Vornamen ein.');
+                    return;
+                }
+                if (!email.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+                    email.focus();
+                    showError('Bitte gib eine gültige E-Mail-Adresse ein.');
+                    return;
+                }
+                if (!dsgvo.checked) {
+                    showError('Bitte stimme der Datenschutzerklärung zu.');
+                    return;
+                }
+
+                // Honeypot check (anti-spam)
+                const honeypot = sibForm.querySelector('input[name="email_address_check"]');
+                if (honeypot && honeypot.value) return;
+
+                // --- Disable button & show loading ---
+                const originalBtnText = submitBtn.innerHTML;
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span>⏳ Wird gesendet...</span>';
+
+                // --- Fire Meta Pixel Lead Event ---
                 if (typeof fbq !== 'undefined') {
                     fbq('track', 'Lead', {
                         content_name: 'Futtercheck',
                         content_category: 'Lead Magnet'
                     });
                 }
+
+                // --- AJAX POST to Brevo ---
+                const formData = new FormData(sibForm);
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', sibForm.getAttribute('action') + '?isAjax=1');
+
+                xhr.addEventListener('load', function() {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                    try {
+                        const response = JSON.parse(xhr.responseText);
+                        if (response.success) {
+                            // Show success message
+                            successPanel.style.display = 'block';
+                            successPanel.classList.add('sib-form-message-panel--active');
+                            if (response.message) {
+                                const txt = successPanel.querySelector('.sib-form-message-panel__inner-text');
+                                if (txt) txt.textContent = response.message;
+                            }
+                            sibForm.reset();
+                            // Scroll to success message
+                            successPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        } else {
+                            showError(response.message || 'Es ist ein Fehler aufgetreten. Bitte versuche es erneut.');
+                        }
+                    } catch (err) {
+                        showError('Es ist ein Fehler aufgetreten. Bitte versuche es erneut.');
+                    }
+                });
+
+                xhr.addEventListener('error', function() {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                    showError('Verbindungsfehler. Bitte prüfe deine Internetverbindung und versuche es erneut.');
+                });
+
+                xhr.send(formData);
+
+                function showError(msg) {
+                    const txt = errorPanel.querySelector('.sib-form-message-panel__inner-text');
+                    if (txt) txt.textContent = msg;
+                    errorPanel.style.display = 'block';
+                    errorPanel.classList.add('sib-form-message-panel--active');
+                    errorPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
             });
         }
     </script>
-
-    <!-- ============================================ -->
-    <!-- BREVO Forms JavaScript                       -->
-    <!-- Steuert Validierung, Error/Success Messages  -->
-    <!-- ============================================ -->
-    <script>
-        window.REQUIRED_CODE_ERROR_MESSAGE = 'Wähle bitte eine Ländervorwahl aus.';
-        window.LOCALE = 'de';
-        window.EMAIL_INVALID_MESSAGE = window.SMS_INVALID_MESSAGE = "Die eingegebenen Informationen sind nicht gültig. Bitte überprüfe das Feldformat und versuche es erneut.";
-        window.REQUIRED_ERROR_MESSAGE = "Dieses Feld darf nicht leer sein.";
-        window.GENERIC_INVALID_MESSAGE = "Die eingegebenen Informationen sind nicht gültig. Bitte überprüfe das Feldformat und versuche es erneut.";
-        window.translation = {
-            common: {
-                selectedList: '{quantity} Liste ausgewählt',
-                selectedLists: '{quantity} Listen ausgewählt',
-            }
-        };
-    </script>
-    <script defer src="https://sibforms.com/forms/end-form/build/main.js"></script>
 </body>
 </html>
