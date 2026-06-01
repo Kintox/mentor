@@ -1,7 +1,7 @@
 # 🔄 Futtercheck Komplett-Umbau – Dokumentation
 
 > **Stand:** 01.06.2026 | **Branch:** `recruiting-funnel-optimization`
-> **Letztes Update:** Reine API-Lösung – Hybrid-Ansatz (sibforms) entfernt, TEXT-Attribute
+> **Letztes Update:** Natives Brevo-Formular für DOI – API entfernt, alle Attribute als Formularfelder
 
 ---
 
@@ -11,7 +11,7 @@
 
 | Datei | Änderung |
 |---|---|
-| `futtercheck.html` | **Komplett neu geschrieben** – Quiz + Lead-Formular + DOI via reine Brevo REST API (`POST /contacts` mit `updateEnabled: false`) |
+| `futtercheck.html` | **Komplett neu geschrieben** – Quiz + Lead-Formular + DOI via natives Brevo-Formular (sibforms, versteckt im DOM) |
 | `index.html` | Brevo-Formular entfernt → durch saubere CTA-Card mit Link zu `futtercheck.html` ersetzt |
 | `bestaetigung-danke.html` | **Neu** – DOI-Bestätigungsseite nach Klick auf den E-Mail-Link (Reico-Design) |
 | `mails/doi_bestaetigung.html` | **Neu** – DOI-Mail-Vorlage für Brevo (Transactional Template) |
@@ -61,46 +61,42 @@ Ergebnisseite (gleiche Datei, dynamisch)
         ├── 4 Benefit-Cards
         └── Partner-CTA: "Mehr über die Partnerschaft erfahren"
 
-    → Brevo API POST /contacts (updateEnabled: false) → Kontakt + Attribute + DOI
-    → Bei Duplikat: PUT /contacts/{email} → Attribute aktualisieren
-    → Nutzer erhält DOI-Mail → klickt Bestätigungslink
-    → Kontakt wird in Brevo aktiviert → Automation startet
+    → Verstecktes Brevo-Formular wird programmatisch befüllt
+    → sibforms main.js macht AJAX POST an sibforms.com
+    → Brevo sendet DOI-Bestätigungsmail
+    → Nutzer klickt Bestätigungslink → Kontakt wird aktiviert → Automation startet
 ```
 
 ---
 
 ## 3. Brevo-Integration (FINALE STRUKTUR)
 
-### API-Anbindung (Reine API-Lösung)
+### API-Anbindung (Natives Brevo-Formular)
 
-- **Brevo REST API v3** (`POST /contacts`): Erstellt Kontakt, setzt alle Attribute, löst DOI aus
-- **Fallback** (`PUT /contacts/{email}`): Aktualisiert Attribute bei bereits existierenden Kontakten
-- **`updateEnabled: false`**: Sorgt dafür, dass Brevo den Kontakt als NEU behandelt → DOI-Mail wird gesendet
-- **API-Key:** Im Code als gesplittetes Array (GitHub Push Protection)
-- **Listen-ID:** `5`
-- **Keine externen Abhängigkeiten** – sibforms.com JS/CSS komplett entfernt
+- **Verstecktes Brevo-Formular** (sibforms.com): Wird programmatisch befüllt und abgesendet
+- **sibforms main.js**: Fängt Submit ab, macht AJAX POST, löst DOI aus
+- **Kein API-Key im Frontend** – Authentifizierung läuft über die Formular-Action-URL
+- **Alle 8 Custom-Attribute** direkt als Formularfelder konfiguriert
+- **DOI-Template** wird in den Brevo-Formular-Einstellungen konfiguriert
 
-> ℹ️ DOI muss in den Brevo-Listeneinstellungen aktiviert und ein DOI-Template konfiguriert sein.
-> Siehe `DOI_INTEGRATION_FINAL.md` für vollständige technische Details.
+> ℹ️ Für die vollständige technische Dokumentation siehe `DOI_INTEGRATION_FINAL.md`
 
-### JSON-Payload (`POST /v3/contacts`)
+### Formular-Daten (werden programmatisch gesetzt)
 
-```json
-{
-  "email": "max@beispiel.de",
-  "attributes": {
-    "VORNAME": "Max",
-    "HUND_KATZE": "hund",
-    "TIERNAME": "Bello",
-    "FUTTERCHECK_SCORE": 72,
-    "FUTTERCHECK_FUTTER": "Trockenfutter (Standard)",
-    "PARTNER_INTERESSE": "Stark",
-    "FUTTERCHECK_FARB_SCORE": "gelb",
-    "SMS": "015678516818"
-  },
-  "listIds": [5],
-  "updateEnabled": false
-}
+```
+EMAIL          = max@beispiel.de
+VORNAME        = Max
+HUND_KATZE     = hund
+TIERNAME       = Bello
+FUTTERCHECK_SCORE      = 72
+FUTTERCHECK_FUTTER     = Trockenfutter (Standard)
+PARTNER_INTERESSE      = Stark
+FUTTERCHECK_FARB_SCORE = gelb
+SMS            = 015678516818
+SMS__COUNTRY_CODE = +49
+email_address_check =          (Honeypot – leer!)
+locale         = de
+
 ```
 
 ### Kontakt-Attribute (in Brevo anzulegen)
@@ -213,8 +209,9 @@ python3 -m http.server 3000
    - Farbe passend zur Punktzahl?
    - Personalisierung (Tiername + Vorname)?
 7. **Browser-Konsole öffnen** (F12) und prüfen:
-   - ✅ "Brevo API: Kontakt erstellt" (oder "Duplikat – Attribute werden aktualisiert…")
-   - 📦 Attribute korrekt (HUND_KATZE, FUTTERCHECK_SCORE, etc.)
+   - 📤 "Brevo-Formular wird abgesendet …"
+   - 📦 Formulardaten korrekt (EMAIL, HUND_KATZE, FUTTERCHECK_SCORE, etc.)
+   - ✅ "Brevo: Formular-Submit ausgelöst – DOI-Mail wird versendet"
 8. **DOI-Mail prüfen:** E-Mail mit Bestätigungslink erhalten?
 9. **Bestätigungslink klicken** → Kontakt in Brevo aktiviert?
 10. **Brevo prüfen:** Kontakt jetzt **aktiv** mit allen 7 Attributen korrekt?
@@ -238,10 +235,10 @@ Nach dem Test sollte der Kontakt in Brevo folgende Attribute haben:
 ## 7. Offene Punkte / TODOs
 
 - [x] ~~`DOI_TEMPLATE_ID` ersetzen~~ – Entfällt
-- [x] ~~Hybrid-Ansatz (sibforms) implementieren~~ – Ersetzt durch reine API-Lösung
+- [x] ~~Reine API-Lösung~~ – Ersetzt durch natives Brevo-Formular (zuverlässiger)
 - [x] ~~Kategorie-Attribute~~ – Auf TEXT umgestellt
-- [ ] Brevo Listen-ID verifizieren (`BREVO_LIST_ID = 5`)
-- [ ] **DOI in Brevo-Listeneinstellungen aktivieren** + DOI-Template konfigurieren
+- [x] ~~API-Key im Frontend~~ – Entfernt, Formular braucht keinen
+- [ ] **Brevo-Formular DOI-Settings prüfen** (Template, Redirect-URL)
 - [ ] Brevo TEXT-Attribute anlegen (siehe Abschnitt 3 – einfach Typ "Text" wählen)
 - [ ] Brevo Automations einrichten (Trigger: Kontakt bestätigt → Ergebnis-Mail + Partner-Sequenz)
 - [ ] Ergebnis-Mails erstellen (Mail1–Mail5 + Ergebnis-Mail je Score)
@@ -254,5 +251,5 @@ Nach dem Test sollte der Kontakt in Brevo folgende Attribute haben:
 
 - **Kein Build-System:** Reine HTML/CSS/JS – direkt deploybar
 - **Tailwind CSS:** Via CDN
-- **Brevo API-Key:** Im Code als Split-Array (GitHub Push Protection Workaround)
+- **Brevo-Formular:** Versteckt im DOM, sibforms.com JS/CSS für AJAX-Submit (kein API-Key nötig)
 - **DSGVO:** Checkbox-Pflicht, Datenschutz-Link, DOI per E-Mail
