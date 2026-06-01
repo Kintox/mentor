@@ -1,6 +1,7 @@
 # 🔄 Futtercheck Komplett-Umbau – Dokumentation
 
 > **Stand:** 01.06.2026 | **Branch:** `recruiting-funnel-optimization`
+> **Letztes Update:** Brevo-Attribute auf finale Struktur umgestellt
 
 ---
 
@@ -11,17 +12,17 @@
 | Datei | Änderung |
 |---|---|
 | `futtercheck.html` | **Komplett neu geschrieben** – eigenständige Quiz-Seite mit Lead-Formular am Ende, Hybrid-Teaser-Ergebnis und Partner-Bridge |
-| `index.html` | Brevo-Formular entfernt → durch saubere CTA-Card mit Link zu `futtercheck.html` ersetzt. Alle Brevo-CSS/JS-Overrides entfernt |
+| `index.html` | Brevo-Formular entfernt → durch saubere CTA-Card mit Link zu `futtercheck.html` ersetzt |
 
 ### Vorher → Nachher
 
 | Vorher | Nachher |
 |---|---|
-| Brevo-Opt-in-Formular **vor** dem Futtercheck (Doppelte Hürde) | Futtercheck **direkt erreichbar** – kein Vorformular |
+| Brevo-Opt-in-Formular **vor** dem Futtercheck | Futtercheck **direkt erreichbar** – kein Vorformular |
 | Lead-Daten am Anfang abgefragt | Lead-Formular **am Ende** nach allen Quiz-Fragen (höhere Conversion) |
 | Ergebnis erst nach DOI-Bestätigung | **Hybrid-Teaser**: Score sofort sichtbar, ausführliche Analyse per DOI-E-Mail |
 | Kein Partner-Akquise-Element | **Partner-Bridge** Block auf der Ergebnisseite mit eigenem CTA |
-| Nur "Kunde"-Flow | **Ein Funnel mit Tagging** – Kunde vs. Partner automatisch segmentiert |
+| Alte Attributnamen (TIERART, FUTTERCHECK_ERGEBNIS) | **Finale Brevo-Attribute** (HUND_KATZE, FUTTERCHECK_FARB_SCORE, etc.) |
 
 ---
 
@@ -59,46 +60,119 @@ Ergebnisseite (gleiche Datei, dynamisch)
 
 ---
 
-## 3. Brevo-Integration
+## 3. Brevo-Integration (FINALE STRUKTUR)
 
 ### API-Anbindung
 
-- **Methode:** Brevo REST API v3 (`/contacts` Endpoint)
+- **Methode:** Brevo REST API v3 (`POST /contacts`)
 - **API-Key:** Im Code als gesplittetes Array (GitHub Push Protection)
-- **Listen-ID:** `2` (⚠️ Bitte in Brevo überprüfen/anpassen)
+- **Listen-ID:** `5`
+- **updateEnabled:** `true` (bestehende Kontakte werden aktualisiert)
 
-### Kontakt-Attribute (in Brevo anlegen)
+### Finale JSON-Payload (Brevo REST API v3)
 
-| Attribut | Typ | Werte |
-|---|---|---|
-| `VORNAME` | Text | Freitext |
-| `TELEFON` | Text | Freitext (optional) |
-| `TIERART` | Text | `hund` oder `katze` |
-| `TIERNAME` | Text | Freitext |
-| `SCORE` | Number | 0–100 |
-| `SCORE_PROFIL` | Text | `score_gruen` / `score_gelb` / `score_rot` |
-| `PARTNER_INTERESSE` | Text | `ja_interesse` / `vielleicht` / `nein` |
-| `FUTTERCHECK_CTA` | Text | `partner_cta_clicked` / `kunde_cta_clicked` |
+```json
+{
+  "email": "max@beispiel.de",
+  "attributes": {
+    "VORNAME": "Max",
+    "HUND_KATZE": "hund",
+    "TIERNAME": "Bello",
+    "FUTTERCHECK_SCORE": 72,
+    "FUTTERCHECK_FUTTER": "Trockenfutter (Standard)",
+    "PARTNER_INTERESSE": "Stark",
+    "FUTTERCHECK_FARB_SCORE": "gelb",
+    "SMS": "0151..."
+  },
+  "listIds": [5],
+  "updateEnabled": true
+}
+```
 
-### Tags (automatisch gesetzt)
+### Kontakt-Attribute (in Brevo anzulegen)
 
-| Tag | Beschreibung |
+| Attribut-ID | Typ | Mögliche Werte | Beschreibung |
+|---|---|---|---|
+| `VORNAME` | **Text** | Freitext | Vorname des Leads |
+| `HUND_KATZE` | **Kategorie** | `hund`, `katze` | Tierart (Kleinschreibung!) |
+| `TIERNAME` | **Text** | Freitext | Name des Tieres |
+| `FUTTERCHECK_SCORE` | **Zahl** | `0`–`100` | Numerischer Futter-Score |
+| `FUTTERCHECK_FUTTER` | **Text** | Freitext | Aktuelles Futter (lesbarer Text) |
+| `PARTNER_INTERESSE` | **Kategorie** | `Stark`, `Leicht`, `Kunde` | Interesse an Partnerschaft |
+| `FUTTERCHECK_FARB_SCORE` | **Kategorie** | `gruen`, `gelb`, `rot` | Ampel-Bewertung des Scores |
+| `SMS` | **Text** | Freitext (optional) | Telefonnummer |
+
+### ⚠️ Brevo Kategorie-Attribute – EXAKT so anlegen!
+
+Kategorie-Attribute müssen in Brevo unter **Kontakte → Einstellungen → Kontakt-Attribute** mit den exakt folgenden Werten angelegt werden. Groß-/Kleinschreibung muss übereinstimmen!
+
+#### HUND_KATZE (Kategorie)
+| ID | Wert |
 |---|---|
-| `futtercheck` | Jeder Lead über den Futtercheck |
-| `hund` / `katze` | Tierart |
-| `score_gruen` | Score ≥ 75 |
-| `score_gelb` | Score 50–74 |
-| `score_rot` | Score < 50 |
-| `partner_interesse_stark` | Q11 = "Ja, klingt spannend" |
-| `partner_interesse_leicht` | Q11 = "Vielleicht" |
-| `nur_kunde` | Q11 = "Nein danke" |
+| 1 | `hund` |
+| 2 | `katze` |
 
-### Brevo Automations (manuell einzurichten)
+#### PARTNER_INTERESSE (Kategorie)
+| ID | Wert |
+|---|---|
+| 1 | `Stark` |
+| 2 | `Leicht` |
+| 3 | `Kunde` |
 
-1. **DOI-Automation:** Trigger = Tag `futtercheck` → DOI-E-Mail mit ausführlicher Analyse senden
-2. **Partner-Sequenz:** Trigger = Tag `partner_interesse_stark` → Partner-Info-Sequenz (3–5 E-Mails)
-3. **Kunden-Sequenz:** Trigger = Tag `nur_kunde` → Futterberatung-Sequenz
-4. **CTA-Follow-up:** Attribut `FUTTERCHECK_CTA` = `partner_cta_clicked` → persönliche Nachricht
+#### FUTTERCHECK_FARB_SCORE (Kategorie)
+| ID | Wert |
+|---|---|
+| 1 | `gruen` |
+| 2 | `gelb` |
+| 3 | `rot` |
+
+### Mapping: Quiz-Antwort → Brevo-Wert
+
+| Quiz-Feld | Quiz-Antwort | → Brevo-Attribut | → Brevo-Wert |
+|---|---|---|---|
+| Tierart (Q1) | Hund / Katze | `HUND_KATZE` | `hund` / `katze` |
+| Partner-Interesse (Q11) | "Ja, klingt spannend" | `PARTNER_INTERESSE` | `Stark` |
+| Partner-Interesse (Q11) | "Vielleicht" | `PARTNER_INTERESSE` | `Leicht` |
+| Partner-Interesse (Q11) | "Nein danke" | `PARTNER_INTERESSE` | `Kunde` |
+| Score ≥ 75 | automatisch | `FUTTERCHECK_FARB_SCORE` | `gruen` |
+| Score 40–74 | automatisch | `FUTTERCHECK_FARB_SCORE` | `gelb` |
+| Score < 40 | automatisch | `FUTTERCHECK_FARB_SCORE` | `rot` |
+| Aktuelles Futter (Q5) | z.B. "trockenfutter_standard" | `FUTTERCHECK_FUTTER` | `Trockenfutter (Standard)` |
+
+### Futter-Wert-Mapping (intern → Brevo)
+
+| Quiz-Value | → FUTTERCHECK_FUTTER |
+|---|---|
+| `nassfutter_premium` | Hochwertiges Nassfutter |
+| `barf` | BARF / Rohfütterung |
+| `selbstgekocht` | Selbstgekocht |
+| `trockenfutter_premium` | Trockenfutter (Premium) |
+| `trockenfutter_standard` | Trockenfutter (Standard) |
+| `misch` | Mischfütterung (Nass + Trocken) |
+| `unsicher` | Unsicher / wechselt oft |
+
+### Tag-Logik (bereinigt)
+
+Tags werden **nicht** mehr über die Brevo-API gesendet (Brevo REST v3 `/contacts` unterstützt kein `tags`-Feld).
+Die Segmentierung erfolgt ausschließlich über die **Kontakt-Attribute**:
+
+| Altes Tag | Ersetzt durch Attribut |
+|---|---|
+| `hund` / `katze` | `HUND_KATZE` = `hund` / `katze` |
+| `score_gruen` / `score_gelb` / `score_rot` | `FUTTERCHECK_FARB_SCORE` = `gruen` / `gelb` / `rot` |
+| `partner_interesse_stark` | `PARTNER_INTERESSE` = `Stark` |
+| `partner_interesse_leicht` | `PARTNER_INTERESSE` = `Leicht` |
+| `nur_kunde` | `PARTNER_INTERESSE` = `Kunde` |
+| `FUTTERCHECK_CTA` | Entfernt – CTA-Tracking über Meta Pixel Events |
+
+### Entfernte Attribute (nicht mehr gesendet)
+
+| Attribut (alt) | Grund |
+|---|---|
+| `TIERART` | Ersetzt durch `HUND_KATZE` |
+| `FUTTERCHECK_ERGEBNIS` | Ersetzt durch `FUTTERCHECK_FARB_SCORE` |
+| `SCORE_PROFIL` | Ersetzt durch `FUTTERCHECK_FARB_SCORE` |
+| `FUTTERCHECK_CTA` | Entfernt – CTA-Tracking über Meta Pixel |
 
 ---
 
@@ -107,10 +181,10 @@ Ergebnisseite (gleiche Datei, dynamisch)
 | Event | Auslöser |
 |---|---|
 | `PageView` | Seitenaufruf |
-| `ViewContent` | Quiz gestartet (Start-Button geklickt) |
-| `Lead` | Lead-Formular abgesendet (Ergebnis anzeigen) |
-| `CustomEvent: FuttercheckCTAClick` | WhatsApp-CTA geklickt |
-| `CustomEvent: PartnerCTAClick` | Partner-CTA geklickt |
+| `ViewContent` | Quiz gestartet |
+| `Lead` | Lead-Formular abgesendet |
+| `PartnerInteresse` (Custom) | Partner-CTA geklickt |
+| `KundeInteresse` (Custom) | WhatsApp-CTA geklickt |
 
 **Pixel ID:** `1267711028899835`
 
@@ -120,11 +194,8 @@ Ergebnisseite (gleiche Datei, dynamisch)
 
 - **Mobile-First:** 80%+ Traffic von Instagram/TikTok
 - **Farbschema:** Reico-Farben (Alge, Kristall, Chlorophyll, Kalk)
-- **Score-Farben:** Grün (#22c55e, ≥75), Gelb (#eab308, 50–74), Rot (#ef4444, <50)
-- **Partner-Bridge:** Immer sichtbar, aber hervorgehoben (roter Rand + Pulse-Glow) bei starkem Interesse
-- **Zwei CTAs:**
-  - Primär (coral/salmon): WhatsApp-Beratung für Kunden
-  - Sekundär (dunkelgrün): Partner-Info
+- **Score-Farben:** Grün (#22c55e, ≥75), Gelb (#eab308, 40–74), Rot (#ef4444, <40)
+- **Partner-Bridge:** Immer sichtbar, hervorgehoben bei starkem Interesse
 
 ---
 
@@ -149,32 +220,35 @@ python3 -m http.server 3000
    - Score-Kreis korrekt?
    - Farbe passend zur Punktzahl?
    - Personalisierung (Tiername + Vorname)?
-   - Geblurrter Teaser sichtbar?
-7. **CTAs testen:**
-   - WhatsApp-Link öffnet korrekt?
-   - Partner-CTA öffnet korrekt?
-8. **Mobile testen** (Chrome DevTools → 400px Breite)
-9. **Brevo prüfen:** Kontakt in Liste 2 mit Tags angelegt?
+7. **Browser-Konsole öffnen** (F12) und prüfen:
+   - ✅ "Kontakt erfolgreich in Brevo erstellt/aktualisiert"
+   - 📦 Payload enthält korrekte Attribute
+8. **Brevo prüfen:** Kontakt mit allen 7 Attributen korrekt?
 
-### Brevo-Test
+### Brevo-Prüfung (Kontakt-Details)
 
-⚠️ **Vor dem Live-Gang:**
-- Listen-ID `2` in Brevo überprüfen (Zeile im Code mit `BREVO_LIST_ID`)
-- Kontakt-Attribute in Brevo anlegen (siehe Tabelle oben)
-- Test-Kontakt erstellen und Tags prüfen
-- DOI-Automation einrichten und testen
+Nach dem Test sollte der Kontakt in Brevo folgende Attribute haben:
+
+| Attribut | Erwarteter Wert |
+|---|---|
+| `VORNAME` | Eingegebener Vorname |
+| `HUND_KATZE` | `hund` oder `katze` |
+| `TIERNAME` | Eingegebener Tiername |
+| `FUTTERCHECK_SCORE` | Zahl 0–100 |
+| `FUTTERCHECK_FUTTER` | Lesbarer Text (z.B. "Trockenfutter (Standard)") |
+| `PARTNER_INTERESSE` | `Stark`, `Leicht` oder `Kunde` |
+| `FUTTERCHECK_FARB_SCORE` | `gruen`, `gelb` oder `rot` |
 
 ---
 
 ## 7. Offene Punkte / TODOs
 
-- [ ] Brevo Listen-ID verifizieren (`BREVO_LIST_ID = 2`)
-- [ ] Brevo Kontakt-Attribute anlegen
-- [ ] DOI-E-Mail Template in Brevo erstellen (mit ausführlicher Analyse)
+- [ ] Brevo Listen-ID verifizieren (`BREVO_LIST_ID = 5`)
+- [ ] **Brevo Kategorie-Attribute anlegen** (siehe Abschnitt 3 oben – exakte Werte!)
+- [ ] DOI-E-Mail Template in Brevo erstellen
 - [ ] Brevo Automations einrichten (DOI, Partner-Sequenz, Kunden-Sequenz)
-- [ ] Partner-CTA Ziel-URL festlegen (aktuell: WhatsApp mit Partner-Text)
-- [ ] Datenschutz-Seite aktualisieren (Futtercheck-Datenverarbeitung erwähnen)
-- [ ] Impressum aktualisieren falls nötig
+- [ ] Ergebnis-Mails erstellen (Mail1–Mail5 + Ergebnis-Mail je Score)
+- [ ] Datenschutz-Seite aktualisieren
 - [ ] Live-Test mit echtem Brevo-Account durchführen
 
 ---
@@ -182,7 +256,6 @@ python3 -m http.server 3000
 ## 8. Technische Hinweise
 
 - **Kein Build-System:** Reine HTML/CSS/JS – direkt deploybar
-- **Tailwind CSS:** Via CDN (`unpkg.com/tailwindcss`)
-- **Brevo API-Key:** Im Code als Split-Array gespeichert (GitHub Push Protection Workaround)
-- **Keine externen Abhängigkeiten** außer Tailwind CDN + Lucide Icons CDN
-- **DSGVO:** Checkbox-Pflicht, Datenschutz-Link, DOI per E-Mail, keine Cookies (außer Meta Pixel)
+- **Tailwind CSS:** Via CDN
+- **Brevo API-Key:** Im Code als Split-Array (GitHub Push Protection Workaround)
+- **DSGVO:** Checkbox-Pflicht, Datenschutz-Link, DOI per E-Mail

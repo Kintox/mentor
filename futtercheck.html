@@ -853,7 +853,7 @@
     // ==========================================
     
     function trackCTA(type) {
-        // Fire specific pixel events
+        // Fire specific pixel events (CTA-Tracking nur über Meta Pixel)
         if (typeof fbq !== 'undefined') {
             if (type === 'partner') {
                 fbq('trackCustom', 'PartnerInteresse', { source: 'futtercheck_result' });
@@ -861,50 +861,58 @@
                 fbq('trackCustom', 'KundeInteresse', { source: 'futtercheck_result' });
             }
         }
-        
-        // Update Brevo contact with CTA tag
-        updateBrevoTag(type === 'partner' ? 'partner_cta_clicked' : 'kunde_cta_clicked');
     }
     
-    async function updateBrevoTag(tag) {
-        if (!BREVO_API_KEY || !answers['email']) return;
-        try {
-            await fetch('https://api.brevo.com/v3/contacts', {
-                method: 'POST',
-                headers: {
-                    'accept': 'application/json',
-                    'content-type': 'application/json',
-                    'api-key': BREVO_API_KEY
-                },
-                body: JSON.stringify({
-                    email: answers['email'],
-                    attributes: { FUTTERCHECK_CTA: tag },
-                    updateEnabled: true
-                })
-            });
-        } catch (e) { /* silent */ }
-    }
+    // CTA-Tracking erfolgt über Meta Pixel Events (PartnerInteresse / KundeInteresse).
+    // FUTTERCHECK_CTA entfernt – nicht im finalen Brevo-Attribut-Schema.
     
     // ==========================================
-    // BREVO INTEGRATION (mit Tags)
+    // BREVO INTEGRATION (finale Attribute)
     // ==========================================
-    
+
+    // Mapping: Futter-Value → lesbarer Text für FUTTERCHECK_FUTTER
+    const FUTTER_LABELS = {
+        'nassfutter_premium': 'Hochwertiges Nassfutter',
+        'barf': 'BARF / Rohfütterung',
+        'selbstgekocht': 'Selbstgekocht',
+        'trockenfutter_premium': 'Trockenfutter (Premium)',
+        'trockenfutter_standard': 'Trockenfutter (Standard)',
+        'misch': 'Mischfütterung (Nass + Trocken)',
+        'unsicher': 'Unsicher / wechselt oft'
+    };
+
+    // Mapping: Quiz-Antwort → Brevo PARTNER_INTERESSE Kategorie-Wert
+    const PARTNER_INTERESSE_MAP = {
+        'ja_interesse': 'Stark',
+        'vielleicht': 'Leicht',
+        'nein': 'Kunde'
+    };
+
     async function sendToBrevo(score, profile) {
         if (!BREVO_API_KEY) {
             console.warn('⚠️ Brevo API Key nicht konfiguriert.');
             return;
         }
-        
-        // Build tags
-        const tags = ['futtercheck'];
-        tags.push(tierart); // 'hund' oder 'katze'
-        tags.push('score_' + profile); // 'score_gruen', 'score_gelb', 'score_rot'
-        
-        const partnerInteresse = answers['partner_interesse'];
-        if (partnerInteresse === 'ja_interesse') tags.push('partner_interesse_stark');
-        else if (partnerInteresse === 'vielleicht') tags.push('partner_interesse_leicht');
-        else tags.push('nur_kunde');
-        
+
+        const partnerInteresse = answers['partner_interesse'] || 'nein';
+
+        // Finale Brevo-Attribute (exakte Brevo-Kategorie-Werte!)
+        const payload = {
+            email: answers['email'],
+            attributes: {
+                VORNAME: answers['vorname'] || '',
+                HUND_KATZE: tierart,                                          // "hund" oder "katze"
+                TIERNAME: tiername || '',
+                FUTTERCHECK_SCORE: score,                                     // Zahl 0–100
+                FUTTERCHECK_FUTTER: FUTTER_LABELS[answers['futter']] || answers['futter'] || '',
+                PARTNER_INTERESSE: PARTNER_INTERESSE_MAP[partnerInteresse] || 'Kunde',  // "Stark", "Leicht", "Kunde"
+                FUTTERCHECK_FARB_SCORE: profile,                              // "gruen", "gelb", "rot"
+                SMS: answers['phone'] || ''
+            },
+            listIds: [BREVO_LIST_ID],
+            updateEnabled: true
+        };
+
         try {
             const response = await fetch('https://api.brevo.com/v3/contacts', {
                 method: 'POST',
@@ -913,26 +921,12 @@
                     'content-type': 'application/json',
                     'api-key': BREVO_API_KEY
                 },
-                body: JSON.stringify({
-                    email: answers['email'],
-                    attributes: {
-                        VORNAME: answers['vorname'],
-                        TIERART: tierart === 'hund' ? 'Hund' : 'Katze',
-                        TIERNAME: tiername,
-                        FUTTERCHECK_SCORE: score,
-                        FUTTERCHECK_ERGEBNIS: profile === 'gruen' ? 'optimal' : (profile === 'gelb' ? 'verbesserbar' : 'kritisch'),
-                        FUTTERCHECK_FUTTER: answers['futter'] || '',
-                        PARTNER_INTERESSE: partnerInteresse || 'nicht_beantwortet',
-                        SMS: answers['phone'] || ''
-                    },
-                    listIds: [BREVO_LIST_ID],
-                    updateEnabled: true
-                })
+                body: JSON.stringify(payload)
             });
-            
+
             if (response.ok || response.status === 201 || response.status === 204) {
                 console.log('✅ Kontakt erfolgreich in Brevo erstellt/aktualisiert');
-                console.log('🏷️ Tags:', tags.join(', '));
+                console.log('📦 Payload:', JSON.stringify(payload, null, 2));
             } else {
                 const errData = await response.json().catch(() => ({}));
                 console.warn('⚠️ Brevo-Antwort:', response.status, errData);
