@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="de" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Dein Futtercheck-Ergebnis für {{ contact.TIERNAME }}</title>
+  <!--[if mso]>
+  <noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
+  <![endif]-->
+  <style type="text/css">
+    /* Reset */
+    body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+    body { margin: 0; padding: 0; width: 100% !important; height: 100% !important; background-color: #FAFAF8; }
+
+    /* Responsive */
+    @media only screen and (max-width: 620px) {
+      .email-container { width: 100% !important; }
+      .fluid { max-width: 100% !important; height: auto !important; }
+      .stack-column { display: block !important; width: 100% !important; }
+      .padding-mobile { padding-left: 20px !important; padding-right: 20px !important; }
+      .score-number { font-size: 48px !important; }
+    }
+  </style>
+</head>
+<body style="margin:0; padding:0; background-color:#FAFAF8; font-family:Arial, Helvetica, sans-serif;">
+
+  <!-- Preheader (unsichtbar, aber in Inbox-Vorschau sichtbar) -->
+  <div style="display:none; max-height:0; overflow:hidden; mso-hide:all; font-size:1px; color:#FAFAF8; line-height:1px;">
+    {{ contact.VORNAME }}, dein persönliches Futtercheck-Ergebnis für {{ contact.TIERNAME }} ist da – {{ contact.FUTTERCHECK_SCORE }} von 100 Punkten.&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌
+  </div>
+
+  <!-- E-Mail Container -->
+  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#FAFAF8;">
+    <tr>
+      <td align="center" style="padding:20px 10px;">
+
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" class="email-container" style="background-color:#ffffff; border-radius:8px; overflow:hidden; box-shadow:0 2px 8px rgba(58,61,12,0.10);">
+
+          <!-- ============================================ -->
+          <!-- HEADER -->
+          <!-- ============================================ -->
+          <tr>
+            <td class="padding-mobile" style="background-color:#3A3D0C; padding:30px 40px; text-align:center;">
+              <h1 style="margin:0; color:#ffffff; font-size:24px; font-weight:700; font-family:Arial, Helvetica, sans-serif;">
+                🐾 Reico Tiernahrung
+              </h1>
+              <p style="margin:8px 0 0; color:#EEF5B2; font-size:14px; font-family:Arial, Helvetica, sans-serif;">
+                Natürliche Ernährung für glückliche Vierbeiner
+              </p>
+            </td>
+          </tr>
+
+          <!-- ============================================ -->
+          <!-- BEGRÜSSUNG -->
+          <!-- ============================================ -->
+          <tr>
+            <td class="padding-mobile" style="padding:40px 40px 20px;">
+              <h2 style="margin:0 0 20px; color:#3A3D0C; font-size:22px; font-family:Arial, Helvetica, sans-serif;">
+                Hallo {{ contact.VORNAME }},
+              </h2>
+              <p style="margin:0 0 16px; color:#2C2C2C; font-size:16px; line-height:1.6; font-family:Arial, Helvetica, sans-serif;">
+                vielen Dank, dass du den Futtercheck für <strong>{{ contact.TIERNAME }}</strong> gemacht hast! Hier ist dein <strong>persönliches Ergebnis</strong> – individuell ausgewertet auf Basis deiner Angaben.
+              </p>
+            </td>
+          </tr>
+
+          <!-- ============================================ -->
+          <!-- SCORE-ANZEIGE (farblich bedingt) -->
+          <!-- ============================================ -->
+          <tr>
+            <td class="padding-mobile" style="padding:0 40px 24px;">
+
+              {% if contact.FUTTERCHECK_FARB_SCORE == "gruen" %}
+              <!-- ===== GRÜN: Score-Box ===== -->
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#F0FDF4; border-radius:8px; border:2px solid #16A34A;">
+                <tr>
+                  <td style="padding:24px; text-align:center;">
+                    <p style="margin:0 0 8px; color:#15803D; font-size:14px; font-weight:700; text-transform:uppercase; letter-spacing:1px; font-family:Arial, Helvetica, sans-serif;">
+                      Futtercheck-Ergebnis für {{ contact.TIERNAME }}
+                    </p>
+                    <p class="score-number" style="margin:0 0 8px; color:#16A34A; font-size:56px; font-weight:700; font-family:Arial, Helvetica, sans-serif;">
+                      {{ contact.FUTTERCHECK_SCORE }}/100
+                    </p>
+                    <p style="margin:0; color:#15803D; font-size:18px; font-weight:700; font-family:Arial, Helvetica, sans-serif;">
+                      ✅ Sehr gute Ernährungssituation
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
+              {% elsif contact.FUTTERCHECK_FARB_SCORE == "gelb" %}
+              <!-- ===== GELB: Score-Box ===== -->
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#FFFBEB; border-radius:8px; border:2px solid #D97706;">
+                <tr>
+                  <td style="padding:24px; text-align:center;">
+                    <p style="margin:0 0 8px; color:#92400E; font-size:14px; font-weight:700; text-transform:uppercase; letter-spacing:1px; font-family:Arial, Helvetica, sans-serif;">
+                      Futtercheck-Ergebnis für {{ contact.TIERNAME }}
+                    </p>
+                    <p class="score-number" style="margin:0 0 8px; color:#D97706; font-size:56px; font-weight:700; font-family:Arial, Helvetica, sans-serif;">
+                      {{ contact.FUTTERCHECK_SCORE }}/100
+                    </p>
+                    <p style="margin:0; color:#92400E; font-size:18px; font-weight:700; font-family:Arial, Helvetica, sans-serif;">
+                      ⚠️ Verbesserungspotenzial vorhanden
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
+              {% else %}
+              <!-- ===== ROT: Score-Box ===== -->
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#FEF2F2; border-radius:8px; border:2px solid #DC2626;">
+                <tr>
+                  <td style="padding:24px; text-align:center;">
+                    <p style="margin:0 0 8px; color:#991B1B; font-size:14px; font-weight:700; text-transform:uppercase; letter-spacing:1px; font-family:Arial, Helvetica, sans-serif;">
+                      Futtercheck-Ergebnis für {{ contact.TIERNAME }}
+                    </p>
+                    <p class="score-number" style="margin:0 0 8px; color:#DC2626; font-size:56px; font-weight:700; font-family:Arial, Helvetica, sans-serif;">
+                      {{ contact.FUTTERCHECK_SCORE }}/100
+                    </p>
+                    <p style="margin:0; color:#991B1B; font-size:18px; font-weight:700; font-family:Arial, Helvetica, sans-serif;">
+                      🔴 Handlungsbedarf bei der Ernährung
+                    </p>
+                  </td>
+                </tr>
+              </table>
+              {% endif %}
+
+            </td>
+          </tr>
+
+          <!-- ============================================ -->
+          <!-- AKTUELLES FUTTER -->
+          <!-- ============================================ -->
+          <tr>
+            <td class="padding-mobile" style="padding:0 40px 24px;">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#F7FAE0; border-radius:8px; border-left:4px solid #3A3D0C;">
+                <tr>
+                  <td style="padding:20px 24px;">
+                    <p style="margin:0 0 8px; color:#3A3D0C; font-size:14px; font-weight:700; text-transform:uppercase; letter-spacing:1px; font-family:Arial, Helvetica, sans-serif;">
+                      Deine aktuelle Fütterung
+                    </p>
+                    <p style="margin:0; color:#3A3D0C; font-size:17px; font-weight:700; font-family:Arial, Helvetica, sans-serif;">
+                      {{ contact.FUTTERCHECK_FUTTER }}
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- ============================================ -->
+          <!-- AUSFÜHRLICHE AUSWERTUNG (bedingt nach Farb-Score) -->
+          <!-- ============================================ -->
+          <tr>
+            <td class="padding-mobile" style="padding:0 40px 16px;">
+              <h3 style="margin:0 0 16px; color:#3A3D0C; font-size:20px; font-family:Arial, Helvetica, sans-serif;">
+                Was bedeutet dein Ergebnis?
+              </h3>
+
+              {% if contact.FUTTERCHECK_FARB_SCORE == "gruen" %}
+              <!-- ===== GRÜNE AUSWERTUNG ===== -->
+              <p style="margin:0 0 16px; color:#2C2C2C; font-size:16px; line-height:1.6; font-family:Arial, Helvetica, sans-serif;">
+                Das ist ein <strong>richtig gutes Ergebnis</strong> – du machst bei der Ernährung von {{ contact.TIERNAME }} bereits vieles richtig. 👏
+              </p>
+              <p style="margin:0 0 16px; color:#2C2C2C; font-size:16px; line-height:1.6; font-family:Arial, Helvetica, sans-serif;">
+                Dein aktuelles Futter (<strong>{{ contact.FUTTERCHECK_FUTTER }}</strong>) scheint gut gewählt zu sein. Trotzdem gibt es auch bei guter Ernährung oft noch <strong>Feinheiten</strong>, die einen Unterschied machen können – zum Beispiel beim mineralischen Gleichgewicht oder bei der Zusammensetzung der Zutaten.
+              </p>
+              <p style="margin:0 0 16px; color:#2C2C2C; font-size:16px; line-height:1.6; font-family:Arial, Helvetica, sans-serif;">
+                Was viele nicht wissen: Selbst hochwertige Futtermittel können ein <strong>Ungleichgewicht im Säure-Basen-Haushalt</strong> verursachen. Langfristig kann das Wohlbefinden, Fell und Verdauung beeinflussen.
+              </p>
+              <p style="margin:0 0 16px; color:#2C2C2C; font-size:16px; line-height:1.6; font-family:Arial, Helvetica, sans-serif;">
+                💡 <strong>Mein Tipp:</strong> Wenn du wissen möchtest, ob auch die letzten Details stimmen, lass uns kurz darüber sprechen. Oft reichen ein paar kleine Anpassungen, um aus „gut" ein „optimal" zu machen.
+              </p>
+
+              {% elsif contact.FUTTERCHECK_FARB_SCORE == "gelb" %}
+              <!-- ===== GELBE AUSWERTUNG ===== -->
+              <p style="margin:0 0 16px; color:#2C2C2C; font-size:16px; line-height:1.6; font-family:Arial, Helvetica, sans-serif;">
+                Dein Ergebnis zeigt: Die Grundlage stimmt, aber es gibt <strong>klares Verbesserungspotenzial</strong> bei der Ernährung von {{ contact.TIERNAME }}.
+              </p>
+              <p style="margin:0 0 16px; color:#2C2C2C; font-size:16px; line-height:1.6; font-family:Arial, Helvetica, sans-serif;">
+                Bei deiner aktuellen Fütterung (<strong>{{ contact.FUTTERCHECK_FUTTER }}</strong>) können typische Schwachpunkte sein:
+              </p>
+              <!-- Gelbe Punkte-Box -->
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#FFFBEB; border-radius:8px; border-left:4px solid #D97706; margin-bottom:16px;">
+                <tr>
+                  <td style="padding:16px 20px;">
+                    <p style="margin:0 0 8px; color:#2C2C2C; font-size:15px; line-height:1.5; font-family:Arial, Helvetica, sans-serif;">
+                      ⚠️ <strong>Mineralisches Ungleichgewicht</strong> – viele Futtersorten sind zu sauer oder zu basisch
+                    </p>
+                    <p style="margin:0 0 8px; color:#2C2C2C; font-size:15px; line-height:1.5; font-family:Arial, Helvetica, sans-serif;">
+                      ⚠️ <strong>Versteckte Zusatzstoffe</strong> – auch bei vermeintlich guten Marken
+                    </p>
+                    <p style="margin:0; color:#2C2C2C; font-size:15px; line-height:1.5; font-family:Arial, Helvetica, sans-serif;">
+                      ⚠️ <strong>Nährstofflücken</strong> – die sich erst langfristig bemerkbar machen
+                    </p>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:0 0 16px; color:#2C2C2C; font-size:16px; line-height:1.6; font-family:Arial, Helvetica, sans-serif;">
+                Die gute Nachricht: Mit den <strong>richtigen Anpassungen</strong> lässt sich hier viel bewegen. Viele Tierhalter berichten, dass sich Fell, Verdauung und Vitalität ihres Vierbeiners schon nach wenigen Wochen spürbar verbessern können.
+              </p>
+
+              {% else %}
+              <!-- ===== ROTE AUSWERTUNG ===== -->
+              <p style="margin:0 0 16px; color:#2C2C2C; font-size:16px; line-height:1.6; font-family:Arial, Helvetica, sans-serif;">
+                Dein Ergebnis zeigt <strong>deutlichen Handlungsbedarf</strong> bei der Ernährung von {{ contact.TIERNAME }}. Das klingt erstmal beunruhigend – aber keine Sorge: Du bist damit nicht allein, und es lässt sich ändern.
+              </p>
+              <p style="margin:0 0 16px; color:#2C2C2C; font-size:16px; line-height:1.6; font-family:Arial, Helvetica, sans-serif;">
+                Bei deiner aktuellen Fütterung (<strong>{{ contact.FUTTERCHECK_FUTTER }}</strong>) bestehen wahrscheinlich mehrere Baustellen:
+              </p>
+              <!-- Rote Punkte-Box -->
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#FEF2F2; border-radius:8px; border-left:4px solid #DC2626; margin-bottom:16px;">
+                <tr>
+                  <td style="padding:16px 20px;">
+                    <p style="margin:0 0 8px; color:#2C2C2C; font-size:15px; line-height:1.5; font-family:Arial, Helvetica, sans-serif;">
+                      🔴 <strong>Erhebliches mineralisches Ungleichgewicht</strong> – kann Organe und Gelenke langfristig belasten
+                    </p>
+                    <p style="margin:0 0 8px; color:#2C2C2C; font-size:15px; line-height:1.5; font-family:Arial, Helvetica, sans-serif;">
+                      🔴 <strong>Problematische Inhaltsstoffe</strong> – Füllstoffe, Zucker, künstliche Konservierungsmittel
+                    </p>
+                    <p style="margin:0; color:#2C2C2C; font-size:15px; line-height:1.5; font-family:Arial, Helvetica, sans-serif;">
+                      🔴 <strong>Mangelnde Nährstoffversorgung</strong> – kann sich durch Fellprobleme, Verdauungsbeschwerden oder Energiemangel zeigen
+                    </p>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:0 0 16px; color:#2C2C2C; font-size:16px; line-height:1.6; font-family:Arial, Helvetica, sans-serif;">
+                <strong>Wichtig:</strong> Eine Ernährungsumstellung kann viel bewirken. Viele Tierhalter berichten von positiven Veränderungen bei Fell, Verdauung und allgemeinem Wohlbefinden – oft schon innerhalb weniger Wochen. Je früher du handelst, desto besser für {{ contact.TIERNAME }}.
+              </p>
+              {% endif %}
+
+            </td>
+          </tr>
+
+          <!-- ============================================ -->
+          <!-- WORAUF ES ANKOMMT (für alle gleich) -->
+          <!-- ============================================ -->
+          <tr>
+            <td class="padding-mobile" style="padding:0 40px 24px;">
+              <h3 style="margin:0 0 16px; color:#3A3D0C; font-size:20px; font-family:Arial, Helvetica, sans-serif;">
+                Worauf es bei gutem {% if contact.HUND_KATZE == "katze" %}Katzenfutter{% else %}Hundefutter{% endif %} wirklich ankommt
+              </h3>
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#F7FAE0; border-radius:8px;">
+                <tr>
+                  <td style="padding:20px 24px;">
+                    <p style="margin:0 0 10px; color:#3A3D0C; font-size:15px; line-height:1.5; font-family:Arial, Helvetica, sans-serif;">
+                      ✅ <strong>Mineralisches Gleichgewicht</strong> – der Säure-Basen-Haushalt muss stimmen
+                    </p>
+                    <p style="margin:0 0 10px; color:#3A3D0C; font-size:15px; line-height:1.5; font-family:Arial, Helvetica, sans-serif;">
+                      ✅ <strong>Hochwertige Zutaten</strong> – Fleisch in Lebensmittelqualität, keine Füllstoffe
+                    </p>
+                    <p style="margin:0 0 10px; color:#3A3D0C; font-size:15px; line-height:1.5; font-family:Arial, Helvetica, sans-serif;">
+                      ✅ <strong>Keine künstlichen Zusätze</strong> – keine Lockstoffe, kein Zucker, keine Konservierungsmittel
+                    </p>
+                    <p style="margin:0; color:#3A3D0C; font-size:15px; line-height:1.5; font-family:Arial, Helvetica, sans-serif;">
+                      ✅ <strong>Transparente Deklaration</strong> – du solltest jede Zutat verstehen können
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- ============================================ -->
+          <!-- CTA: KOSTENLOSE BERATUNG -->
+          <!-- ============================================ -->
+          <tr>
+            <td class="padding-mobile" style="padding:0 40px 16px;">
+
+              {% if contact.FUTTERCHECK_FARB_SCORE == "gruen" %}
+              <p style="margin:0 0 16px; color:#2C2C2C; font-size:16px; line-height:1.6; font-family:Arial, Helvetica, sans-serif;">
+                Du möchtest wissen, ob du das letzte Quäntchen für {{ contact.TIERNAME }} rausholen kannst? Lass uns kurz sprechen – <strong>kostenlos und unverbindlich</strong>:
+              </p>
+
+              {% elsif contact.FUTTERCHECK_FARB_SCORE == "gelb" %}
+              <p style="margin:0 0 16px; color:#2C2C2C; font-size:16px; line-height:1.6; font-family:Arial, Helvetica, sans-serif;">
+                Ich zeige dir gerne in einem kurzen Gespräch, welche <strong>konkreten Schritte</strong> du für {{ contact.TIERNAME }} unternehmen kannst – <strong>kostenlos und unverbindlich</strong>:
+              </p>
+
+              {% else %}
+              <p style="margin:0 0 16px; color:#2C2C2C; font-size:16px; line-height:1.6; font-family:Arial, Helvetica, sans-serif;">
+                Lass uns gemeinsam schauen, wie wir die Ernährung von {{ contact.TIERNAME }} <strong>schnell und unkompliziert verbessern</strong> können – <strong>kostenlos und unverbindlich</strong>:
+              </p>
+              {% endif %}
+
+            </td>
+          </tr>
+
+          <!-- CTA Button -->
+          <tr>
+            <td class="padding-mobile" style="padding:0 40px 30px;">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin:0 auto;">
+                <tr>
+                  <td style="background-color:#FF9888; border-radius:8px; text-align:center;">
+                    <a href="[CALENDLY-LINK]" target="_blank" style="display:inline-block; padding:16px 36px; color:#ffffff; font-size:18px; font-weight:700; text-decoration:none; font-family:Arial, Helvetica, sans-serif;">
+                    Kostenlose Beratung sichern →
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- ============================================ -->
+          <!-- SANFTER PARTNER-HINWEIS -->
+          <!-- ============================================ -->
+          <tr>
+            <td class="padding-mobile" style="padding:0 40px 24px;">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#F7FAE0; border-radius:8px; border-left:4px solid #3A3D0C;">
+                <tr>
+                  <td style="padding:20px 24px;">
+                    <p style="margin:0 0 8px; color:#3A3D0C; font-size:15px; font-weight:700; font-family:Arial, Helvetica, sans-serif;">
+                      💡 Übrigens: Wusstest du schon?
+                    </p>
+                    <p style="margin:0; color:#2C2C2C; font-size:15px; line-height:1.5; font-family:Arial, Helvetica, sans-serif;">
+                      Viele unserer zufriedenen Kunden empfehlen Reico im Freundeskreis weiter – und verdienen damit sogar etwas dazu. Falls das für dich interessant klingt, erzähle ich dir im Gespräch gerne mehr darüber. Aber erstmal geht es um {{ contact.TIERNAME }} und die beste Ernährung. 🐾
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- ============================================ -->
+          <!-- ABSCHLUSS -->
+          <!-- ============================================ -->
+          <tr>
+            <td class="padding-mobile" style="padding:0 40px 30px;">
+              <p style="margin:0 0 8px; color:#2C2C2C; font-size:16px; line-height:1.6; font-family:Arial, Helvetica, sans-serif;">
+                Ich freue mich, von dir zu hören!
+              </p>
+              <p style="margin:0 0 8px; color:#2C2C2C; font-size:16px; line-height:1.6; font-family:Arial, Helvetica, sans-serif;">
+                Liebe Grüße<br>
+                <strong>Cedric</strong>
+              </p>
+              <p style="margin:20px 0 0; color:#666666; font-size:14px; line-height:1.5; font-style:italic; font-family:Arial, Helvetica, sans-serif;">
+                P.S. In den nächsten Tagen bekommst du noch ein paar wertvolle Tipps zur {% if contact.HUND_KATZE == "katze" %}Katzen{% else %}Hunde{% endif %}ernährung von mir – bleib dran! 🐾
+              </p>
+            </td>
+          </tr>
+
+          <!-- ============================================ -->
+          <!-- TRENNLINIE -->
+          <!-- ============================================ -->
+          <tr>
+            <td class="padding-mobile" style="padding:0 40px;">
+              <hr style="border:none; border-top:1px solid #EAE2D5; margin:0;">
+            </td>
+          </tr>
+
+          <!-- ============================================ -->
+          <!-- FOOTER -->
+          <!-- ============================================ -->
+          <tr>
+            <td class="padding-mobile" style="padding:24px 40px 30px; text-align:center;">
+              <p style="margin:0 0 8px; color:#999999; font-size:12px; line-height:1.5; font-family:Arial, Helvetica, sans-serif;">
+                Du erhältst diese E-Mail, weil du den kostenlosen Futtercheck auf cedricnitsch.de durchgeführt hast.
+              </p>
+              <p style="margin:0 0 8px; color:#999999; font-size:12px; line-height:1.5; font-family:Arial, Helvetica, sans-serif;">
+                <a href="{{ unsubscribe }}" style="color:#999999; text-decoration:underline;">Abmelden</a> &nbsp;|&nbsp;
+                <a href="https://cedricnitsch.de/impressum.html" style="color:#999999; text-decoration:underline;">Impressum</a> &nbsp;|&nbsp;
+                <a href="https://cedricnitsch.de/datenschutz.html" style="color:#999999; text-decoration:underline;">Datenschutz</a>
+              </p>
+              <p style="margin:12px 0 0; color:#bbbbbb; font-size:11px; line-height:1.4; font-family:Arial, Helvetica, sans-serif;">
+                Cedric Nitsch | cedricnitsch.de<br>
+                Esbecker Str. 22 | 59557 Lippstadt<br>
+                E-Mail: info@cedricnitsch.de
+              </p>
+              <p style="margin:12px 0 0; color:#bbbbbb; font-size:10px; line-height:1.4; font-family:Arial, Helvetica, sans-serif;">
+                * Hinweis: Der Futtercheck dient der allgemeinen Orientierung und ersetzt keine tierärztliche Beratung. Ergebnisse und Verbesserungen sind individuell.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
