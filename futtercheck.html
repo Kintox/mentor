@@ -220,6 +220,12 @@
     const BREVO_API_KEY = _bk[0] + '-' + _bk[1] + '-' + _bk[2];
     const BREVO_LIST_ID = 5;
     const WHATSAPP_NUMBER = '4915678516818';
+
+    // DOI-Konfiguration
+    // ⚠️ PLATZHALTER: Ersetze DOI_TEMPLATE_ID durch die echte Brevo-Template-ID
+    // (wird nach Upload der DOI-Vorlage in Brevo generiert, z.B. 3, 7, 12 …)
+    const DOI_TEMPLATE_ID = 'DOI_TEMPLATE_ID'; // ← Brevo-Template-ID hier eintragen!
+    const DOI_REDIRECTION_URL = 'https://cedricnitsch.de/bestaetigung-danke.html';
     
     // ==========================================
     // STATE
@@ -896,7 +902,17 @@
 
         const partnerInteresse = answers['partner_interesse'] || 'nein';
 
-        // Finale Brevo-Attribute (exakte Brevo-Kategorie-Werte!)
+        // =============================================
+        // BREVO DOI (Double-Opt-In) – /contacts/doubleOptinConfirmation
+        // =============================================
+        // Kontakt wird mit DOI-Pending-Status angelegt.
+        // Brevo verschickt automatisch die DOI-Mail (templateId).
+        // Erst nach Klick auf Bestätigungslink wird der Kontakt aktiviert
+        // und die Automation kann starten.
+        //
+        // ⚠️  DOI_TEMPLATE_ID muss noch durch die echte ID ersetzt werden!
+        //     (Brevo → Transactional → Templates → ID der DOI-Vorlage)
+
         const payload = {
             email: answers['email'],
             attributes: {
@@ -909,12 +925,13 @@
                 FUTTERCHECK_FARB_SCORE: profile,                              // "gruen", "gelb", "rot"
                 SMS: answers['phone'] || ''
             },
-            listIds: [BREVO_LIST_ID],
-            updateEnabled: true
+            includeListIds: [BREVO_LIST_ID],
+            templateId: parseInt(DOI_TEMPLATE_ID),
+            redirectionUrl: DOI_REDIRECTION_URL
         };
 
         try {
-            const response = await fetch('https://api.brevo.com/v3/contacts', {
+            const response = await fetch('https://api.brevo.com/v3/contacts/doubleOptinConfirmation', {
                 method: 'POST',
                 headers: {
                     'accept': 'application/json',
@@ -925,14 +942,50 @@
             });
 
             if (response.ok || response.status === 201 || response.status === 204) {
-                console.log('✅ Kontakt erfolgreich in Brevo erstellt/aktualisiert');
+                console.log('✅ DOI-Kontakt angelegt – Bestätigungsmail wird von Brevo versendet');
                 console.log('📦 Payload:', JSON.stringify(payload, null, 2));
             } else {
                 const errData = await response.json().catch(() => ({}));
                 console.warn('⚠️ Brevo-Antwort:', response.status, errData);
+
+                // Fallback: Falls DOI fehlschlägt (z.B. Template-ID ungültig),
+                // versuche direktes Anlegen, damit kein Lead verloren geht
+                if (response.status >= 400) {
+                    console.warn('🔄 Fallback: Versuche direktes Anlegen ohne DOI …');
+                    await sendToBrevoFallback(payload);
+                }
             }
         } catch (err) {
             console.error('❌ Brevo-Fehler:', err);
+        }
+    }
+
+    // Fallback: Direktes Anlegen ohne DOI (damit kein Lead verloren geht)
+    async function sendToBrevoFallback(doiPayload) {
+        try {
+            const fallbackPayload = {
+                email: doiPayload.email,
+                attributes: doiPayload.attributes,
+                listIds: [BREVO_LIST_ID],
+                updateEnabled: true
+            };
+            const resp = await fetch('https://api.brevo.com/v3/contacts', {
+                method: 'POST',
+                headers: {
+                    'accept': 'application/json',
+                    'content-type': 'application/json',
+                    'api-key': BREVO_API_KEY
+                },
+                body: JSON.stringify(fallbackPayload)
+            });
+            if (resp.ok || resp.status === 201 || resp.status === 204) {
+                console.log('✅ Fallback: Kontakt direkt angelegt (ohne DOI)');
+            } else {
+                const e = await resp.json().catch(() => ({}));
+                console.warn('⚠️ Fallback fehlgeschlagen:', resp.status, e);
+            }
+        } catch (err) {
+            console.error('❌ Fallback-Fehler:', err);
         }
     }
     

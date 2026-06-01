@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Deine E-Mail-Adresse wurde erfolgreich bestätigt. Du erhältst gleich dein persönliches Futtercheck-Ergebnis.">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Bestätigung erfolgreich! | Cedric Nitsch</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        reico: {
+                            alge: '#3A3D0C',
+                            chlorophyll: '#EEF5B2',
+                            chlorophyllDark: '#E7F191',
+                            kalk: '#EAE2D5',
+                            kristall: '#FF9888',
+                            text: '#2C2C2C',
+                            light: '#FAFAF8'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .smooth-scroll { scroll-behavior: smooth; }
+        @keyframes checkmark {
+            0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+            50% { transform: scale(1.2) rotate(0deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        .animate-checkmark { animation: checkmark 0.6s ease-out 0.3s both; }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up { animation: fadeUp 0.5s ease-out 0.6s both; }
+        .animate-fade-up-delay { animation: fadeUp 0.5s ease-out 0.9s both; }
+    </style>
+
+    <!-- Meta Pixel (optional – Conversion-Tracking) -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1267711028899835');
+    fbq('track', 'PageView');
+    </script>
+</head>
+<body class="font-sans bg-reico-light text-reico-text smooth-scroll">
+
+    <!-- ============================================ -->
+    <!-- HEADER                                       -->
+    <!-- ============================================ -->
+    <header class="bg-reico-alge text-white py-4">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <a href="index.html" class="text-xl font-bold hover:text-reico-kristall transition-colors">
+                Cedric Nitsch
+            </a>
+            <p class="text-xs text-white/50 mt-1">Selbstständiger Vertriebspartner · Reico & Partner</p>
+        </div>
+    </header>
+
+    <!-- ============================================ -->
+    <!-- BESTÄTIGUNGS-CONTENT                         -->
+    <!-- ============================================ -->
+    <main class="min-h-[60vh] flex items-center justify-center py-16 px-4">
+        <div class="max-w-lg mx-auto text-center">
+
+            <!-- Erfolgs-Icon -->
+            <div class="animate-checkmark mb-8">
+                <div class="w-24 h-24 sm:w-28 sm:h-28 bg-green-100 rounded-full flex items-center justify-center mx-auto shadow-lg">
+                    <i data-lucide="check-circle-2" class="w-14 h-14 sm:w-16 sm:h-16 text-green-600"></i>
+                </div>
+            </div>
+
+            <!-- Headline -->
+            <h1 class="animate-fade-up text-2xl sm:text-3xl font-bold text-reico-alge mb-4">
+                Vielen Dank für deine Bestätigung! 🎉
+            </h1>
+
+            <!-- Beschreibung -->
+            <div class="animate-fade-up-delay space-y-4">
+                <p class="text-base sm:text-lg text-reico-text/80 leading-relaxed">
+                    Deine E-Mail-Adresse wurde erfolgreich bestätigt.<br>
+                    <strong>Du erhältst gleich dein persönliches Futtercheck-Ergebnis per E-Mail.</strong>
+                </p>
+
+                <div class="bg-reico-chlorophyll/40 border border-reico-chlorophyllDark/50 rounded-2xl p-5 sm:p-6 mt-6">
+                    <div class="flex items-start gap-3 text-left">
+                        <span class="text-2xl flex-shrink-0">📬</span>
+                        <div>
+                            <p class="text-sm sm:text-base text-reico-text/70">
+                                Schau in deinem <strong>Posteingang</strong> nach – die ausführliche Auswertung 
+                                mit individuellen Tipps ist bereits auf dem Weg.
+                            </p>
+                            <p class="text-xs text-reico-text/50 mt-2">
+                                Nicht gefunden? Prüfe bitte auch deinen <strong>Spam-Ordner</strong>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CTA: Zurück zur Startseite -->
+                <div class="mt-8">
+                    <a href="index.html" 
+                       class="inline-flex items-center gap-2 text-reico-alge font-semibold hover:text-reico-kristall transition-colors text-sm sm:text-base">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                        Zurück zur Startseite
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- ============================================ -->
+    <!-- FOOTER                                       -->
+    <!-- ============================================ -->
+    <footer class="bg-reico-alge text-white py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-sm text-white/40 mb-2">&copy; 2026 Cedric Nitsch. Alle Rechte vorbehalten.</p>
+            <p class="text-xs text-white/30">
+                Selbstständiger Vertriebspartner der REiCO & Partner Vertriebs GmbH.
+                Die Ergebnisse können individuell variieren.
+            </p>
+            <div class="mt-4 space-x-4 text-sm text-white/50">
+                <a href="impressum.html" class="hover:text-white">Impressum</a>
+                <a href="datenschutz.html" class="hover:text-white">Datenschutz</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
