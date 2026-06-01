@@ -91,7 +91,7 @@
                 </tr>
               </table>
 
-              {% elsif contact.FUTTERCHECK_FARB_SCORE == "gelb" %}
+              {% elseif contact.FUTTERCHECK_FARB_SCORE == "gelb" %}
               <!-- ===== GELB: Score-Box ===== -->
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#FFFBEB; border-radius:8px; border:2px solid #D97706;">
                 <tr>
@@ -175,7 +175,7 @@
                 💡 <strong>Mein Tipp:</strong> Wenn du wissen möchtest, ob auch die letzten Details stimmen, lass uns kurz darüber sprechen. Oft reichen ein paar kleine Anpassungen, um aus „gut" ein „optimal" zu machen.
               </p>
 
-              {% elsif contact.FUTTERCHECK_FARB_SCORE == "gelb" %}
+              {% elseif contact.FUTTERCHECK_FARB_SCORE == "gelb" %}
               <!-- ===== GELBE AUSWERTUNG ===== -->
               <p style="margin:0 0 16px; color:#2C2C2C; font-size:16px; line-height:1.6; font-family:Arial, Helvetica, sans-serif;">
                 Dein Ergebnis zeigt: Die Grundlage stimmt, aber es gibt <strong>klares Verbesserungspotenzial</strong> bei der Ernährung von {{ contact.TIERNAME }}.
@@ -275,7 +275,7 @@
                 Du möchtest wissen, ob du das letzte Quäntchen für {{ contact.TIERNAME }} rausholen kannst? Lass uns kurz sprechen – <strong>kostenlos und unverbindlich</strong>:
               </p>
 
-              {% elsif contact.FUTTERCHECK_FARB_SCORE == "gelb" %}
+              {% elseif contact.FUTTERCHECK_FARB_SCORE == "gelb" %}
               <p style="margin:0 0 16px; color:#2C2C2C; font-size:16px; line-height:1.6; font-family:Arial, Helvetica, sans-serif;">
                 Ich zeige dir gerne in einem kurzen Gespräch, welche <strong>konkreten Schritte</strong> du für {{ contact.TIERNAME }} unternehmen kannst – <strong>kostenlos und unverbindlich</strong>:
               </p>
