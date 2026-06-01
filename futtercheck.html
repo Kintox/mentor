@@ -896,51 +896,85 @@
     };
 
     function sendToBrevo(score, profile) {
+        console.log('🚀 sendToBrevo() gestartet – Score:', score, 'Profil:', profile);
+
+        // 1. Formular finden
         const form = document.getElementById('sib-form');
         if (!form) {
             console.error('❌ Brevo: Verstecktes Formular (#sib-form) nicht gefunden!');
             return;
         }
+        console.log('✅ Formular #sib-form gefunden');
 
+        // 2. Werte vorbereiten
         const partnerInteresse = answers['partner_interesse'] || 'nein';
         const futterLabel = FUTTER_LABELS[answers['futter']] || answers['futter'] || '';
         const partnerLabel = PARTNER_INTERESSE_MAP[partnerInteresse] || 'Kunde';
         const phoneNumber = answers['phone'] || '';
 
-        // Formularfelder befüllen
-        form.querySelector('#EMAIL').value = answers['email'] || '';
-        form.querySelector('#VORNAME').value = answers['vorname'] || '';
-        form.querySelector('#HUND_KATZE').value = tierart || '';
-        form.querySelector('#TIERNAME').value = tiername || '';
-        form.querySelector('#FUTTERCHECK_SCORE').value = String(score);
-        form.querySelector('#FUTTERCHECK_FUTTER').value = futterLabel;
-        form.querySelector('#FUTTERCHECK_FARB_SCORE').value = profile;           // "gruen"/"gelb"/"rot"
-        form.querySelector('#PARTNER_INTERESSE').value = partnerLabel;
-        form.querySelector('#SMS').value = phoneNumber;
-        form.querySelector('[name="SMS__COUNTRY_CODE"]').value = '+49';           // Default Deutschland
-        form.querySelector('[name="email_address_check"]').value = '';            // Honeypot leer lassen!
+        // 3. Feld-Mapping: sib-ID → Wert
+        //    name-Attribut bleibt unverändert (EMAIL, VORNAME, etc.) → sibforms braucht das
+        //    id-Attribut hat sib-Prefix → vermeidet Konflikte mit Quiz-Formular
+        //    SMS-Felder: sibforms main.js ERSETZT die originalen Inputs!
+        //      → Original <input id="sib-sms"> wird zu <input class="sib-sms-select__phone-number" name="SMS">
+        //      → Original <select id="sib-sms-country"> wird zu <input class="sib-sms-select__calling-code" name="SMS__COUNTRY_CODE">
+        //    Darum: SMS-Felder per name-Attribut selektieren (nicht per id)
+        const fieldMap = [
+            { sel: '#sib-email',               name: 'EMAIL',                  value: answers['email'] || '' },
+            { sel: '#sib-vorname',             name: 'VORNAME',                value: answers['vorname'] || '' },
+            { sel: '#sib-hund-katze',          name: 'HUND_KATZE',             value: tierart || '' },
+            { sel: '#sib-tiername',            name: 'TIERNAME',               value: tiername || '' },
+            { sel: '#sib-score',               name: 'FUTTERCHECK_SCORE',      value: String(score) },
+            { sel: '#sib-futter',              name: 'FUTTERCHECK_FUTTER',     value: futterLabel },
+            { sel: '#sib-farb-score',          name: 'FUTTERCHECK_FARB_SCORE', value: profile },
+            { sel: '#sib-interesse',           name: 'PARTNER_INTERESSE',      value: partnerLabel },
+            { sel: '[name="SMS"]',             name: 'SMS',                    value: phoneNumber },
+            { sel: '[name="SMS__COUNTRY_CODE"]', name: 'SMS__COUNTRY_CODE',    value: '+49' }
+        ];
 
-        // Debug-Logging
-        const formData = {
-            EMAIL: answers['email'],
-            VORNAME: answers['vorname'],
-            HUND_KATZE: tierart,
-            TIERNAME: tiername,
-            FUTTERCHECK_SCORE: score,
-            FUTTERCHECK_FUTTER: futterLabel,
-            FUTTERCHECK_FARB_SCORE: profile,
-            PARTNER_INTERESSE: partnerLabel,
-            SMS: phoneNumber
-        };
+        // 4. Felder befüllen mit Null-Checks
+        let allFieldsOk = true;
+        const filledData = {};
+
+        fieldMap.forEach(({ sel, name, value }) => {
+            const el = form.querySelector(sel);
+            if (el) {
+                el.value = value;
+                filledData[name] = value;
+                console.log(`  ✅ ${name} (${sel}) = "${value}"`);
+            } else {
+                allFieldsOk = false;
+                console.error(`  ❌ Feld nicht gefunden: ${sel} (name="${name}")`);
+            }
+        });
+
+        // 5. Honeypot leer setzen (Anti-Bot)
+        const honeypot = form.querySelector('[name="email_address_check"]');
+        if (honeypot) {
+            honeypot.value = '';
+            console.log('  ✅ Honeypot (email_address_check) = "" (leer)');
+        } else {
+            console.warn('  ⚠️ Honeypot-Feld nicht gefunden');
+        }
+
+        // 6. Zusammenfassung loggen
         console.log('📤 Brevo-Formular wird abgesendet …');
-        console.log('📦 Formulardaten:', JSON.stringify(formData, null, 2));
+        console.log('📦 Formulardaten:', JSON.stringify(filledData, null, 2));
+        if (!allFieldsOk) {
+            console.warn('⚠️ Nicht alle Felder wurden gefunden – Formular wird trotzdem abgesendet');
+        }
 
-        // Submit auslösen – sibforms main.js fängt das ab und macht AJAX
-        try {
-            form.querySelector('[type="submit"]').click();
-            console.log('✅ Brevo: Formular-Submit ausgelöst – DOI-Mail wird versendet');
-        } catch (err) {
-            console.error('❌ Brevo Formular-Submit Fehler:', err);
+        // 7. Submit auslösen – sibforms main.js fängt das ab und macht AJAX
+        const submitBtn = form.querySelector('[type="submit"]');
+        if (submitBtn) {
+            try {
+                submitBtn.click();
+                console.log('✅ Brevo: Formular-Submit ausgelöst – DOI-Mail wird versendet');
+            } catch (err) {
+                console.error('❌ Brevo Formular-Submit Fehler:', err);
+            }
+        } else {
+            console.error('❌ Submit-Button nicht gefunden im Formular!');
         }
     }
     
@@ -970,7 +1004,7 @@
             <div class="form__entry entry_block">
               <div class="form__label-row">
                 <div class="entry__field">
-                  <input class="input" type="text" id="EMAIL" name="EMAIL" autocomplete="off" data-required="true" required />
+                  <input class="input" type="text" id="sib-email" name="EMAIL" autocomplete="off" data-required="true" required />
                 </div>
               </div>
               <label class="entry__error entry__error--primary"></label>
@@ -982,7 +1016,7 @@
             <div class="form__entry entry_block">
               <div class="form__label-row">
                 <div class="entry__field">
-                  <input class="input" maxlength="200" type="text" id="VORNAME" name="VORNAME" autocomplete="off" data-required="true" required />
+                  <input class="input" maxlength="200" type="text" id="sib-vorname" name="VORNAME" autocomplete="off" data-required="true" required />
                 </div>
               </div>
               <label class="entry__error entry__error--primary"></label>
@@ -994,7 +1028,7 @@
             <div class="form__entry entry_block">
               <div class="form__label-row">
                 <div class="entry__field">
-                  <input class="input" maxlength="200" type="text" id="HUND_KATZE" name="HUND_KATZE" autocomplete="off" data-required="true" required />
+                  <input class="input" maxlength="200" type="text" id="sib-hund-katze" name="HUND_KATZE" autocomplete="off" data-required="true" required />
                 </div>
               </div>
               <label class="entry__error entry__error--primary"></label>
@@ -1006,7 +1040,7 @@
             <div class="form__entry entry_block">
               <div class="form__label-row">
                 <div class="entry__field">
-                  <input class="input" maxlength="200" type="text" id="TIERNAME" name="TIERNAME" autocomplete="off" data-required="true" required />
+                  <input class="input" maxlength="200" type="text" id="sib-tiername" name="TIERNAME" autocomplete="off" data-required="true" required />
                 </div>
               </div>
               <label class="entry__error entry__error--primary"></label>
@@ -1018,7 +1052,7 @@
             <div class="form__entry entry_block">
               <div class="form__label-row">
                 <div class="entry__field">
-                  <input class="input" maxlength="200" type="text" data-numeric="true" id="FUTTERCHECK_SCORE" name="FUTTERCHECK_SCORE" autocomplete="off" data-required="true" required />
+                  <input class="input" maxlength="200" type="text" data-numeric="true" id="sib-score" name="FUTTERCHECK_SCORE" autocomplete="off" data-required="true" required />
                 </div>
               </div>
               <label class="entry__error entry__error--primary"></label>
@@ -1030,7 +1064,7 @@
             <div class="form__entry entry_block">
               <div class="form__label-row">
                 <div class="entry__field">
-                  <input class="input" maxlength="200" type="text" id="FUTTERCHECK_FARB_SCORE" name="FUTTERCHECK_FARB_SCORE" autocomplete="off" data-required="true" required />
+                  <input class="input" maxlength="200" type="text" id="sib-farb-score" name="FUTTERCHECK_FARB_SCORE" autocomplete="off" data-required="true" required />
                 </div>
               </div>
               <label class="entry__error entry__error--primary"></label>
@@ -1042,7 +1076,7 @@
             <div class="form__entry entry_block">
               <div class="form__label-row">
                 <div class="entry__field">
-                  <input class="input" maxlength="200" type="text" id="FUTTERCHECK_FUTTER" name="FUTTERCHECK_FUTTER" autocomplete="off" data-required="true" required />
+                  <input class="input" maxlength="200" type="text" id="sib-futter" name="FUTTERCHECK_FUTTER" autocomplete="off" data-required="true" required />
                 </div>
               </div>
               <label class="entry__error entry__error--primary"></label>
@@ -1054,7 +1088,7 @@
             <div class="form__entry entry_block">
               <div class="form__label-row">
                 <div class="entry__field">
-                  <input class="input" maxlength="200" type="text" id="PARTNER_INTERESSE" name="PARTNER_INTERESSE" autocomplete="off" data-required="true" required />
+                  <input class="input" maxlength="200" type="text" id="sib-interesse" name="PARTNER_INTERESSE" autocomplete="off" data-required="true" required />
                 </div>
               </div>
               <label class="entry__error entry__error--primary"></label>
@@ -1068,14 +1102,14 @@
                 <div class="sib-sms-input-wrapper" style="direction:ltr">
                   <div class="sib-sms-input" data-placeholder="WhatsApp" data-country-code="DE" data-value="" data-attributename="SMS">
                     <div class="entry__field">
-                      <select class="input" name="SMS__COUNTRY_CODE">
+                      <select class="input" id="sib-sms-country" name="SMS__COUNTRY_CODE">
                         <option value="+49" selected>+49 DE</option>
                         <option value="+43">+43 AT</option>
                         <option value="+41">+41 CH</option>
                       </select>
                     </div>
                     <div class="entry__field" style="width:100%">
-                      <input type="tel" class="input" id="SMS" name="SMS" autocomplete="off" />
+                      <input type="tel" class="input" id="sib-sms" name="SMS" autocomplete="off" />
                     </div>
                   </div>
                 </div>
