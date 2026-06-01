@@ -8,33 +8,34 @@ Recruiting-Funnel Landingpage für Reico & Partner Vertriebspartnerschaft. Optim
 
 | Datei | Beschreibung |
 |---|---|
-| `index.html` | Hauptseite mit Lead-Magnet, Opt-in-Formular, Testimonials, FAQ, CTAs |
+| `index.html` | Hauptseite mit Lead-Magnet, Brevo Opt-in-Formular, Testimonials, FAQ, CTAs |
+| `futtercheck.html` | **Interaktiver Futtercheck** – 12-Fragen-Quiz mit Score & Brevo-Anbindung |
 | `danke.html` | Danke-Seite nach Opt-in mit Terminbuchung & nächsten Schritten |
 | `impressum.html` | Impressum (rechtliche Pflichtseite) |
 | `datenschutz.html` | Datenschutzerklärung (DSGVO) |
 | `images/` | Bilder (Hund, Katze, Pferd, Mensch, Profilbild) |
+| `FUTTERCHECK.md` | Dokumentation des Futterchecks (Funktion, Konfiguration) |
 | `style.css` | Legacy-Styles (nicht aktiv genutzt, Tailwind via CDN) |
 
 ---
 
 ## 🔧 Konfiguration
 
-### 1. Formular-Backend (Web3Forms)
+### 1. Formular-Backend (Brevo)
 
-Das Opt-in-Formular nutzt **Web3Forms** (kostenlos, DSGVO-konform).
+Das Opt-in-Formular auf `index.html` und der interaktive Futtercheck nutzen **Brevo** (ehemals Sendinblue).
 
-**Schritte:**
-1. Gehe zu [https://web3forms.com](https://web3forms.com)
-2. Erstelle einen kostenlosen Account mit deiner E-Mail
-3. Kopiere deinen **Access Key**
-4. Ersetze in `index.html` den Platzhalter:
-   ```html
-   <input type="hidden" name="access_key" value="DEIN_WEB3FORMS_ACCESS_KEY_HIER_EINTRAGEN">
-   ```
-5. Passe die Redirect-URL an (falls die Domain anders ist):
-   ```html
-   <input type="hidden" name="redirect" value="https://cedricnitsch.de/danke.html">
-   ```
+- **index.html:** Brevo-Formular mit Double-Opt-in (Custom AJAX Handler, kein Brevo main.js)
+- **futtercheck.html:** Brevo Contacts API (`/v3/contacts`) für Lead-Erstellung nach Quiz-Abschluss
+
+**Brevo Listen-ID anpassen:**
+In `futtercheck.html` findest du:
+```javascript
+const BREVO_LIST_ID = 2; // ⚠️ An deine Brevo-Liste anpassen!
+```
+Ändere die `2` auf die ID deiner Futtercheck-Liste in Brevo (unter Kontakte → Listen).
+
+> Siehe auch: [FUTTERCHECK.md](FUTTERCHECK.md) für die vollständige Dokumentation des Futterchecks.
 
 ### 2. Meta-Pixel (Facebook/Instagram)
 
@@ -87,7 +88,8 @@ Die Danke-Seite enthält vorbereitete Embed-Codes für Calendly und TidyCal.
 ## 📊 Änderungsübersicht (v2.0 – Recruiting-Funnel-Optimierung)
 
 ### Neu hinzugefügt:
-- ✅ **Lead-Magnet Opt-in-Formular** (Futtercheck) mit Web3Forms-Integration
+- ✅ **Lead-Magnet Opt-in-Formular** (Futtercheck) mit Brevo-Integration
+- ✅ **Interaktiver Futtercheck** (`futtercheck.html`) – 12-Fragen-Quiz mit Scoring & Brevo-API
 - ✅ **Danke-Seite** (`danke.html`) mit Terminbuchungs-Integration
 - ✅ **Testimonials-Sektion** mit 3 Beispiel-Testimonials (Avatar 1, 2 & 3)
 - ✅ **Vertrauensleiste** mit Zahlen (30+ Jahre, 8.500+ Partner, 100 Mio. €)
@@ -121,7 +123,7 @@ Die Danke-Seite enthält vorbereitete Embed-Codes für Calendly und TidyCal.
 - **Tailwind CSS** (CDN) – Utility-first CSS Framework
 - **Lucide Icons** – Moderne Icon-Library
 - **Google Fonts** (Poppins) – Typografie
-- **Web3Forms** – Formulardaten-Verarbeitung (kostenlos, DSGVO-konform)
+- **Brevo** (Sendinblue) – Formulare, Kontakte, E-Mail-Automation (DSGVO-konform)
 - **Meta Pixel** – Facebook/Instagram Tracking
 - **GitHub Pages** – Hosting
 
