@@ -1,7 +1,7 @@
 # 🔄 Futtercheck Komplett-Umbau – Dokumentation
 
 > **Stand:** 01.06.2026 | **Branch:** `recruiting-funnel-optimization`
-> **Letztes Update:** Brevo-Attribute auf finale Struktur umgestellt
+> **Letztes Update:** Reine API-Lösung – Hybrid-Ansatz (sibforms) entfernt, TEXT-Attribute
 
 ---
 
@@ -11,7 +11,7 @@
 
 | Datei | Änderung |
 |---|---|
-| `futtercheck.html` | **Komplett neu geschrieben** – Quiz + Lead-Formular + DOI via Brevo-Formular (sibforms) + API für Custom-Attribute |
+| `futtercheck.html` | **Komplett neu geschrieben** – Quiz + Lead-Formular + DOI via reine Brevo REST API (`POST /contacts` mit `updateEnabled: false`) |
 | `index.html` | Brevo-Formular entfernt → durch saubere CTA-Card mit Link zu `futtercheck.html` ersetzt |
 | `bestaetigung-danke.html` | **Neu** – DOI-Bestätigungsseite nach Klick auf den E-Mail-Link (Reico-Design) |
 | `mails/doi_bestaetigung.html` | **Neu** – DOI-Mail-Vorlage für Brevo (Transactional Template) |
@@ -61,9 +61,9 @@ Ergebnisseite (gleiche Datei, dynamisch)
         ├── 4 Benefit-Cards
         └── Partner-CTA: "Mehr über die Partnerschaft erfahren"
 
-    → Schritt 1: Brevo API POST /contacts → Custom-Attribute setzen
-    → Schritt 2: Verstecktes Brevo-Formular → sibforms.com → DOI-Mail
-    → Nutzer klickt Bestätigungslink in der Mail
+    → Brevo API POST /contacts (updateEnabled: false) → Kontakt + Attribute + DOI
+    → Bei Duplikat: PUT /contacts/{email} → Attribute aktualisieren
+    → Nutzer erhält DOI-Mail → klickt Bestätigungslink
     → Kontakt wird in Brevo aktiviert → Automation startet
 ```
 
@@ -71,17 +71,19 @@ Ergebnisseite (gleiche Datei, dynamisch)
 
 ## 3. Brevo-Integration (FINALE STRUKTUR)
 
-### API-Anbindung (Hybrid: API + Brevo-Formular)
+### API-Anbindung (Reine API-Lösung)
 
-- **Schritt 1 – Brevo REST API v3** (`POST /contacts`): Setzt alle Custom-Attribute
-- **Schritt 2 – Brevo DOI-Formular** (sibforms.com): Löst die DOI-Bestätigungsmail aus
+- **Brevo REST API v3** (`POST /contacts`): Erstellt Kontakt, setzt alle Attribute, löst DOI aus
+- **Fallback** (`PUT /contacts/{email}`): Aktualisiert Attribute bei bereits existierenden Kontakten
+- **`updateEnabled: false`**: Sorgt dafür, dass Brevo den Kontakt als NEU behandelt → DOI-Mail wird gesendet
 - **API-Key:** Im Code als gesplittetes Array (GitHub Push Protection)
 - **Listen-ID:** `5`
-- **Kein Platzhalter mehr nötig** – DOI_TEMPLATE_ID entfällt, da das offizielle Brevo-Formular verwendet wird
+- **Keine externen Abhängigkeiten** – sibforms.com JS/CSS komplett entfernt
 
-> ℹ️ Für die vollständige technische Dokumentation der DOI-Integration siehe `DOI_INTEGRATION_FINAL.md`
+> ℹ️ DOI muss in den Brevo-Listeneinstellungen aktiviert und ein DOI-Template konfiguriert sein.
+> Siehe `DOI_INTEGRATION_FINAL.md` für vollständige technische Details.
 
-### Finale JSON-Payload (Brevo REST API – `/contacts`)
+### JSON-Payload (`POST /v3/contacts`)
 
 ```json
 {
@@ -97,46 +99,24 @@ Ergebnisseite (gleiche Datei, dynamisch)
     "SMS": "015678516818"
   },
   "listIds": [5],
-  "updateEnabled": true
+  "updateEnabled": false
 }
 ```
 
 ### Kontakt-Attribute (in Brevo anzulegen)
 
+> ℹ️ **Alle Attribute sind jetzt TEXT** – keine Kategorie-Attribute mehr nötig. Das vereinfacht die Einrichtung erheblich.
+
 | Attribut-ID | Typ | Mögliche Werte | Beschreibung |
 |---|---|---|---|
 | `VORNAME` | **Text** | Freitext | Vorname des Leads |
-| `HUND_KATZE` | **Kategorie** | `hund`, `katze` | Tierart (Kleinschreibung!) |
+| `HUND_KATZE` | **Text** | `hund`, `katze` | Tierart (Kleinschreibung!) |
 | `TIERNAME` | **Text** | Freitext | Name des Tieres |
 | `FUTTERCHECK_SCORE` | **Zahl** | `0`–`100` | Numerischer Futter-Score |
 | `FUTTERCHECK_FUTTER` | **Text** | Freitext | Aktuelles Futter (lesbarer Text) |
-| `PARTNER_INTERESSE` | **Kategorie** | `Stark`, `Leicht`, `Kunde` | Interesse an Partnerschaft |
-| `FUTTERCHECK_FARB_SCORE` | **Kategorie** | `gruen`, `gelb`, `rot` | Ampel-Bewertung des Scores |
+| `PARTNER_INTERESSE` | **Text** | `Stark`, `Leicht`, `Kunde` | Interesse an Partnerschaft |
+| `FUTTERCHECK_FARB_SCORE` | **Text** | `gruen`, `gelb`, `rot` | Ampel-Bewertung des Scores |
 | `SMS` | **Text** | Freitext (optional) | Telefonnummer |
-
-### ⚠️ Brevo Kategorie-Attribute – EXAKT so anlegen!
-
-Kategorie-Attribute müssen in Brevo unter **Kontakte → Einstellungen → Kontakt-Attribute** mit den exakt folgenden Werten angelegt werden. Groß-/Kleinschreibung muss übereinstimmen!
-
-#### HUND_KATZE (Kategorie)
-| ID | Wert |
-|---|---|
-| 1 | `hund` |
-| 2 | `katze` |
-
-#### PARTNER_INTERESSE (Kategorie)
-| ID | Wert |
-|---|---|
-| 1 | `Stark` |
-| 2 | `Leicht` |
-| 3 | `Kunde` |
-
-#### FUTTERCHECK_FARB_SCORE (Kategorie)
-| ID | Wert |
-|---|---|
-| 1 | `gruen` |
-| 2 | `gelb` |
-| 3 | `rot` |
 
 ### Mapping: Quiz-Antwort → Brevo-Wert
 
@@ -233,9 +213,8 @@ python3 -m http.server 3000
    - Farbe passend zur Punktzahl?
    - Personalisierung (Tiername + Vorname)?
 7. **Browser-Konsole öffnen** (F12) und prüfen:
-   - ✅ "Brevo API: Custom-Attribute gesetzt"
+   - ✅ "Brevo API: Kontakt erstellt" (oder "Duplikat – Attribute werden aktualisiert…")
    - 📦 Attribute korrekt (HUND_KATZE, FUTTERCHECK_SCORE, etc.)
-   - 📨 "DOI-Formular wird abgesendet …"
 8. **DOI-Mail prüfen:** E-Mail mit Bestätigungslink erhalten?
 9. **Bestätigungslink klicken** → Kontakt in Brevo aktiviert?
 10. **Brevo prüfen:** Kontakt jetzt **aktiv** mit allen 7 Attributen korrekt?
@@ -258,9 +237,12 @@ Nach dem Test sollte der Kontakt in Brevo folgende Attribute haben:
 
 ## 7. Offene Punkte / TODOs
 
-- [x] ~~`DOI_TEMPLATE_ID` ersetzen~~ – Entfällt: DOI über offizielles Brevo-Formular (sibforms)
+- [x] ~~`DOI_TEMPLATE_ID` ersetzen~~ – Entfällt
+- [x] ~~Hybrid-Ansatz (sibforms) implementieren~~ – Ersetzt durch reine API-Lösung
+- [x] ~~Kategorie-Attribute~~ – Auf TEXT umgestellt
 - [ ] Brevo Listen-ID verifizieren (`BREVO_LIST_ID = 5`)
-- [ ] **Brevo Kategorie-Attribute anlegen** (siehe Abschnitt 3 oben – exakte Werte!)
+- [ ] **DOI in Brevo-Listeneinstellungen aktivieren** + DOI-Template konfigurieren
+- [ ] Brevo TEXT-Attribute anlegen (siehe Abschnitt 3 – einfach Typ "Text" wählen)
 - [ ] Brevo Automations einrichten (Trigger: Kontakt bestätigt → Ergebnis-Mail + Partner-Sequenz)
 - [ ] Ergebnis-Mails erstellen (Mail1–Mail5 + Ergebnis-Mail je Score)
 - [ ] Datenschutz-Seite aktualisieren

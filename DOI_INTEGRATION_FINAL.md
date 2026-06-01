@@ -1,20 +1,29 @@
 # DOI-Integration – Finale Dokumentation
 
 > **Stand:** 01.06.2026 | **Branch:** `recruiting-funnel-optimization`
+> **Letztes Update:** Reine API-Lösung – sibforms/Hybrid komplett entfernt
 
 ---
 
 ## Überblick
 
-Die DOI (Double-Opt-In) Integration nutzt das **offizielle Brevo-Formular** (sibforms.com) für die Bestätigungsmail, kombiniert mit der **Brevo REST API** für Custom-Attribute.
+Die DOI (Double-Opt-In) Integration nutzt die **Brevo REST API v3** (`POST /contacts`) mit `updateEnabled: false`. Dies ist die sauberste Lösung: ein einziger API-Call erstellt den Kontakt, setzt alle Attribute und löst die DOI-Bestätigungsmail aus.
 
-### Warum dieser Hybrid-Ansatz?
+### Warum reine API-Lösung?
 
-| Ansatz | Status | Problem |
-|--------|--------|---------|
-| Brevo API `/contacts/doubleOptinConfirmation` | ❌ Hat nicht funktioniert | Template-ID-Setup komplex, CORS-Probleme |
-| Brevo DOI-Formular (sibforms) | ✅ Funktioniert | Kann nur Basis-Felder (Email, Vorname, SMS) |
-| **Hybrid: API + Formular** | ✅ **Aktuelle Lösung** | API setzt Attribute, Formular löst DOI aus |
+| Ansatz | Status | Bewertung |
+|--------|--------|-----------|
+| Brevo API `/contacts/doubleOptinConfirmation` | ❌ Verworfen | Template-ID-Setup komplex, CORS-Probleme |
+| Brevo DOI-Formular (sibforms) | ❌ Entfernt | Externe Abhängigkeit, nur Basis-Felder, fragil |
+| Hybrid: API + Formular | ❌ Entfernt | Überflüssig komplex, zwei Schritte statt einem |
+| **Reine API (`POST /contacts`)** | ✅ **Aktuelle Lösung** | Ein Call, alle Attribute, DOI über Listeneinstellung |
+
+### Voraussetzungen in Brevo
+
+1. **DOI in Liste aktivieren:** Kontakte → Listen → Liste 5 → Einstellungen → "Double Opt-In aktivieren"
+2. **DOI-Template konfigurieren:** In den Listeneinstellungen das DOI-Bestätigungs-Template auswählen
+3. **Redirect-URL setzen:** `https://cedricnitsch.de/bestaetigung-danke.html`
+4. **TEXT-Attribute anlegen:** Alle Custom-Attribute als Typ "Text" (siehe Tabelle unten)
 
 ---
 
@@ -25,24 +34,26 @@ Nutzer füllt Futtercheck aus
     ↓ Klickt "Ergebnis anzeigen"
     ↓
 ┌─────────────────────────────────────────────────┐
-│ SCHRITT 1: Brevo REST API (/v3/contacts)        │
-│ → Kontakt anlegen/aktualisieren                 │
-│ → ALLE Custom-Attribute setzen:                 │
-│   VORNAME, HUND_KATZE, TIERNAME,                │
-│   FUTTERCHECK_SCORE, FUTTERCHECK_FUTTER,        │
-│   PARTNER_INTERESSE, FUTTERCHECK_FARB_SCORE     │
-│ → updateEnabled: true                           │
-│ → listIds: [5]                                  │
+│ Brevo REST API: POST /v3/contacts               │
+│                                                  │
+│ → Kontakt anlegen mit updateEnabled: false       │
+│ → ALLE Custom-Attribute setzen:                  │
+│   VORNAME, HUND_KATZE, TIERNAME,                 │
+│   FUTTERCHECK_SCORE, FUTTERCHECK_FUTTER,         │
+│   PARTNER_INTERESSE, FUTTERCHECK_FARB_SCORE, SMS │
+│ → listIds: [5]                                   │
+│ → Brevo erkennt: neuer Kontakt → sendet DOI-Mail │
 └─────────────────────────────────────────────────┘
     ↓
-┌─────────────────────────────────────────────────┐
-│ SCHRITT 2: Brevo DOI-Formular (sibforms)        │
-│ → Verstecktes <form> wird programmatisch        │
-│   ausgefüllt und abgesendet                     │
-│ → sibforms main.js fängt Submit ab              │
-│ → AJAX POST an sibforms.com                     │
-│ → Brevo sendet DOI-Bestätigungsmail             │
-└─────────────────────────────────────────────────┘
+    ├── ✅ Erfolg (201) → Kontakt erstellt, DOI-Mail wird gesendet
+    │
+    └── ⚠️ Duplikat (400 duplicate_parameter)
+        ↓
+    ┌─────────────────────────────────────────────┐
+    │ Fallback: PUT /v3/contacts/{email}           │
+    │ → Attribute aktualisieren                    │
+    │ → Kontakt bleibt in bestehendem Status       │
+    └─────────────────────────────────────────────┘
     ↓
 Nutzer sieht sofort das Ergebnis (Score-Kreis)
     ↓
@@ -53,75 +64,80 @@ Kontakt wird in Brevo aktiviert → Automation startet
 
 ---
 
-## Verstecktes Brevo-Formular
+## Code-Implementierung
 
-Das offizielle Brevo-Formular ist unsichtbar im DOM eingebettet (`position:absolute; left:-9999px`).
+### `sendToBrevo(email, vorname, attributes)` 
 
-### Formular-Action
-```
-https://527052f3.sibforms.com/serve/MUIFAEsoUsu2lQEwZbEGWqu3v6u9wL2SIPPUymK-A_Vc0QPh5brKiyc__E3MTjN9YYhO3Tqv-YtqYTJeAH6h3IV0Mt5ECrXtrWv73icuhdF0rgKNrVbQDxNTrQLccP0-cvUBbw9TcGjJobMlR1757jpWbQmfb6FPlxkFczQhk0UQ5mCi5IIPD5GZPTV7gIyGgCy2PSFGJ-ObCxEZ1g==
-```
+Hauptfunktion – erstellt Kontakt via `POST /contacts`:
 
-### Formulardaten
-
-| Feld | Name | Typ | Beschreibung |
-|------|------|-----|-------------|
-| Vorname | `VORNAME` | text, required | Aus Quiz-Antwort |
-| E-Mail | `EMAIL` | text, required | Aus Lead-Formular |
-| WhatsApp | `SMS` | tel, optional | Ohne Ländervorwahl |
-| Ländervorwahl | `SMS__COUNTRY_CODE` | select | Default: `+49 DE` |
-| Honeypot | `email_address_check` | hidden, leer | Anti-Bot (muss leer bleiben!) |
-| Locale | `locale` | hidden | `de` |
-
-### Externe Abhängigkeiten
-
-| Ressource | URL | Zweck |
-|-----------|-----|-------|
-| sibforms CSS | `https://sibforms.com/forms/end-form/build/sib-styles.css` | Formular-Styles (minimal, da versteckt) |
-| sibforms JS | `https://sibforms.com/forms/end-form/build/main.js` | AJAX-Form-Handler für DOI |
-
----
-
-## Geänderte Dateien
-
-| Datei | Änderung |
-|-------|----------|
-| `futtercheck.html` | API-Endpoint von `/contacts/doubleOptinConfirmation` auf `/contacts` umgestellt + verstecktes Brevo-Formular für DOI + sibforms JS |
-| `.nojekyll` | Neu – deaktiviert Jekyll für GitHub Pages (behebt Liquid-Syntax-Fehler) |
-| `mails/BREVO_ERGEBNIS_MAIL_SETUP.md` | Bare Liquid-Tag escaped |
-| `mails/BREVO_PARTNER_SEQUENZ_SETUP.md` | Bare Liquid-Tag escaped |
-
-### Entfernt
-
-| Was | Grund |
-|-----|-------|
-| `DOI_TEMPLATE_ID` Platzhalter | Nicht mehr benötigt – DOI über sibforms |
-| `DOI_REDIRECTION_URL` | Nicht mehr benötigt – Redirect wird von Brevo-Formular gesteuert |
-| `sendToBrevoFallback()` | Ersetzt durch 2-Schritt-Ansatz (API + Formular) |
-
----
-
-## Brevo-Attribute (unverändert)
-
-Die API setzt weiterhin alle Custom-Attribute:
-
-```json
-{
-  "email": "max@beispiel.de",
-  "attributes": {
-    "VORNAME": "Max",
-    "HUND_KATZE": "hund",
-    "TIERNAME": "Bello",
-    "FUTTERCHECK_SCORE": 72,
-    "FUTTERCHECK_FUTTER": "Trockenfutter (Standard)",
-    "PARTNER_INTERESSE": "Stark",
-    "FUTTERCHECK_FARB_SCORE": "gelb",
-    "SMS": "015678516818"
-  },
-  "listIds": [5],
-  "updateEnabled": true
+```javascript
+async function sendToBrevo(email, vorname, attributes) {
+    const payload = {
+        email: email,
+        attributes: {
+            VORNAME: vorname,
+            HUND_KATZE: attributes.hundKatze,
+            TIERNAME: attributes.tiername,
+            FUTTERCHECK_SCORE: attributes.score,
+            FUTTERCHECK_FUTTER: attributes.futter,
+            PARTNER_INTERESSE: attributes.partnerInteresse,
+            FUTTERCHECK_FARB_SCORE: attributes.farbScore,
+            ...(attributes.sms && { SMS: attributes.sms })
+        },
+        listIds: [BREVO_LIST_ID],
+        updateEnabled: false  // ← Wichtig für DOI!
+    };
+    // POST /v3/contacts
+    // Bei 400 duplicate_parameter → updateBrevoContact()
 }
 ```
+
+### `updateBrevoContact(email, attributes)`
+
+Fallback bei Duplikat – aktualisiert nur Attribute:
+
+```javascript
+async function updateBrevoContact(email, attributes) {
+    const payload = { attributes: { ... } };
+    // PUT /v3/contacts/{encodeURIComponent(email)}
+}
+```
+
+### Schlüssel: `updateEnabled: false`
+
+- **`updateEnabled: false`** = Brevo behandelt den Kontakt als NEU → DOI wird ausgelöst
+- **`updateEnabled: true`** = Brevo würde bestehende Kontakte stillschweigend aktualisieren → KEIN DOI
+
+---
+
+## Kontakt-Attribute (alle TEXT)
+
+> ℹ️ Alle Attribute sind Typ **TEXT** – keine Kategorie-Attribute mehr nötig.
+
+| Attribut-ID | Typ | Mögliche Werte | Beschreibung |
+|---|---|---|---|
+| `VORNAME` | Text | Freitext | Vorname des Leads |
+| `HUND_KATZE` | Text | `hund`, `katze` | Tierart |
+| `TIERNAME` | Text | Freitext | Name des Tieres |
+| `FUTTERCHECK_SCORE` | Zahl | `0`–`100` | Numerischer Futter-Score |
+| `FUTTERCHECK_FUTTER` | Text | Freitext | Aktuelles Futter (lesbarer Text) |
+| `PARTNER_INTERESSE` | Text | `Stark`, `Leicht`, `Kunde` | Interesse an Partnerschaft |
+| `FUTTERCHECK_FARB_SCORE` | Text | `gruen`, `gelb`, `rot` | Ampel-Bewertung |
+| `SMS` | Text | Freitext (optional) | Telefonnummer |
+
+---
+
+## Entfernte Komponenten (Hybrid-Ansatz)
+
+| Was | Warum entfernt |
+|-----|----------------|
+| Verstecktes `<form id="sib-form">` | Nicht mehr nötig – reine API |
+| `sibforms.com/forms/.../sib-styles.css` | Externe Abhängigkeit entfernt |
+| `sibforms.com/forms/.../main.js` | Externe Abhängigkeit entfernt |
+| `BREVO_DOI_FORM_ACTION` Konstante | Formular-URL nicht mehr benötigt |
+| `submitBrevoDOIForm()` Funktion | Ersetzt durch `sendToBrevo()` |
+| `window.REQUIRED_CODE_ERROR_MESSAGE` | sibforms-spezifisch |
+| `window.LOCALE` / `window.EMAIL_INVALID_MESSAGE` | sibforms-spezifisch |
 
 ---
 
@@ -142,30 +158,37 @@ python3 -m http.server 3000
 ### 3. Browser-Konsole prüfen (F12)
 Erwartete Logs:
 ```
-✅ Brevo API: Custom-Attribute gesetzt
-📦 Attribute: { VORNAME: "Max", HUND_KATZE: "hund", ... }
-📨 DOI-Formular wird abgesendet …
+📤 Sende an Brevo API... {email: "...", attributes: {...}}
+✅ Brevo API: Kontakt erstellt
+```
+Oder bei Duplikat:
+```
+⚠️ Brevo: Kontakt existiert bereits – Attribute werden aktualisiert...
+✅ Brevo: Attribute aktualisiert
 ```
 
 ### 4. E-Mail prüfen
 - DOI-Bestätigungsmail erhalten?
-- Bestätigungslink klicken
+- Bestätigungslink klicken → `bestaetigung-danke.html`?
 - In Brevo: Kontakt jetzt aktiv mit allen Attributen?
 
 ---
 
-## GitHub Pages Fix
+## Fehlerbehandlung
 
-### Problem
-GitHub Pages nutzt Jekyll, das Liquid-Syntax (`{% if %}`, `{% else %}`, etc.) in Markdown-Dateien interpretiert. Brevo-Code-Beispiele in der Dokumentation haben Jekyll-Build-Fehler verursacht.
+| Fehler | Verhalten |
+|--------|-----------|
+| `201` Created | ✅ Kontakt erstellt, DOI-Mail unterwegs |
+| `400` duplicate_parameter | ⚠️ Fallback: `PUT /contacts/{email}` |
+| `400` anderer Fehler | ❌ Console Error, Ergebnis wird trotzdem angezeigt |
+| Netzwerkfehler | ❌ Console Error, Ergebnis wird trotzdem angezeigt |
 
-### Lösung
-`.nojekyll` Datei im Root-Verzeichnis. Diese deaktiviert Jekyll vollständig – ideal für reine HTML/CSS/JS-Seiten ohne Jekyll-Template-Engine.
+> **Wichtig:** Brevo-Fehler blockieren NICHT die Ergebnisanzeige. Der Nutzer sieht immer sein Ergebnis.
 
 ---
 
 ## Offene Punkte
 
-- [ ] Live-Test: Quiz ausfüllen → DOI-Mail erhalten → Bestätigen → Kontakt prüfen
+- [ ] DOI in Brevo-Listeneinstellungen aktivieren + Template konfigurieren
+- [ ] Live-Test: Quiz → DOI-Mail erhalten → Bestätigen → Kontakt prüfen
 - [ ] Brevo-Automations einrichten (Trigger: Kontakt bestätigt → Ergebnis-Mail + Sequenz)
-- [ ] Prüfen, ob die Brevo-Formular-Redirect-URL korrekt konfiguriert ist (in Brevo-Formular-Settings)
