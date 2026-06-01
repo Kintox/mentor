@@ -225,7 +225,7 @@ Diese steuern, ob „Hundefutter" oder „Katzenfutter" im Text steht.
 **Lösung:**
 - Prüfe in der API/Webhook-Integration, ob das Attribut korrekt gesetzt wird
 - Erlaubte Werte: exakt `gruen`, `gelb`, `rot` (Kleinschreibung, keine Umlaute)
-- Der `{% else %}`-Block (rot) greift als Fallback, wenn der Wert weder `gruen` noch `gelb` ist
+- Der `else`-Block (rot) greift als Fallback, wenn der Wert weder `gruen` noch `gelb` ist
 
 ### Problem: Personalisierung zeigt leere Felder
 

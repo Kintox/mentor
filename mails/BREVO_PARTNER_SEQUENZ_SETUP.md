@@ -73,7 +73,7 @@ Die Mails verwenden Brevo/Jinja2-Template-Syntax:
 {% endif %}
 ```
 
-**Wichtig:** Falls das Attribut nicht gesetzt ist (z.B. bei Kontakten ohne Funnel-Daten), greift der `{% else %}`-Block – also die Kunden-Variante. So ist sichergestellt, dass niemand einen kaputten oder leeren Block sieht.
+**Wichtig:** Falls das Attribut nicht gesetzt ist (z.B. bei Kontakten ohne Funnel-Daten), greift der `else`-Block – also die Kunden-Variante. So ist sichergestellt, dass niemand einen kaputten oder leeren Block sieht.
 
 ---
 

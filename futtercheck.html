@@ -221,11 +221,8 @@
     const BREVO_LIST_ID = 5;
     const WHATSAPP_NUMBER = '4915678516818';
 
-    // DOI-Konfiguration
-    // ⚠️ PLATZHALTER: Ersetze DOI_TEMPLATE_ID durch die echte Brevo-Template-ID
-    // (wird nach Upload der DOI-Vorlage in Brevo generiert, z.B. 3, 7, 12 …)
-    const DOI_TEMPLATE_ID = 1; // ← Brevo-Template-ID hier eintragen!
-    const DOI_REDIRECTION_URL = 'https://cedricnitsch.de/bestaetigung-danke.html';
+    // Brevo DOI-Formular URL (aus dem offiziellen Brevo-Formular)
+    const BREVO_DOI_FORM_ACTION = 'https://527052f3.sibforms.com/serve/MUIFAEsoUsu2lQEwZbEGWqu3v6u9wL2SIPPUymK-A_Vc0QPh5brKiyc__E3MTjN9YYhO3Tqv-YtqYTJeAH6h3IV0Mt5ECrXtrWv73icuhdF0rgKNrVbQDxNTrQLccP0-cvUBbw9TcGjJobMlR1757jpWbQmfb6FPlxkFczQhk0UQ5mCi5IIPD5GZPTV7gIyGgCy2PSFGJ-ObCxEZ1g==';
     
     // ==========================================
     // STATE
@@ -873,8 +870,15 @@
     // FUTTERCHECK_CTA entfernt – nicht im finalen Brevo-Attribut-Schema.
     
     // ==========================================
-    // BREVO INTEGRATION (finale Attribute)
+    // BREVO INTEGRATION (DOI-Formular + API für Attribute)
     // ==========================================
+    //
+    // Ablauf:
+    // 1. Brevo API (/contacts) → setzt alle Custom-Attribute (HUND_KATZE, Score, etc.)
+    // 2. Brevo DOI-Formular (sibforms.com) → löst die DOI-Bestätigungsmail aus
+    //
+    // Das offizielle Brevo-Formular (sibforms) kümmert sich um DOI.
+    // Die API setzt die Quiz-Daten als Kontakt-Attribute.
 
     // Mapping: Futter-Value → lesbarer Text für FUTTERCHECK_FUTTER
     const FUTTER_LABELS = {
@@ -895,98 +899,95 @@
     };
 
     async function sendToBrevo(score, profile) {
-        if (!BREVO_API_KEY) {
-            console.warn('⚠️ Brevo API Key nicht konfiguriert.');
-            return;
-        }
-
         const partnerInteresse = answers['partner_interesse'] || 'nein';
 
         // =============================================
-        // BREVO DOI (Double-Opt-In) – /contacts/doubleOptinConfirmation
+        // SCHRITT 1: Brevo API – Custom-Attribute setzen
         // =============================================
-        // Kontakt wird mit DOI-Pending-Status angelegt.
-        // Brevo verschickt automatisch die DOI-Mail (templateId).
-        // Erst nach Klick auf Bestätigungslink wird der Kontakt aktiviert
-        // und die Automation kann starten.
-        //
-        // ⚠️  DOI_TEMPLATE_ID muss noch durch die echte ID ersetzt werden!
-        //     (Brevo → Transactional → Templates → ID der DOI-Vorlage)
+        if (BREVO_API_KEY) {
+            try {
+                const attrPayload = {
+                    email: answers['email'],
+                    attributes: {
+                        VORNAME: answers['vorname'] || '',
+                        HUND_KATZE: tierart,                                          // "hund" oder "katze"
+                        TIERNAME: tiername || '',
+                        FUTTERCHECK_SCORE: score,                                     // Zahl 0–100
+                        FUTTERCHECK_FUTTER: FUTTER_LABELS[answers['futter']] || answers['futter'] || '',
+                        PARTNER_INTERESSE: PARTNER_INTERESSE_MAP[partnerInteresse] || 'Kunde',
+                        FUTTERCHECK_FARB_SCORE: profile,                              // "gruen", "gelb", "rot"
+                        SMS: answers['phone'] || ''
+                    },
+                    listIds: [BREVO_LIST_ID],
+                    updateEnabled: true
+                };
 
-        const payload = {
-            email: answers['email'],
-            attributes: {
-                VORNAME: answers['vorname'] || '',
-                HUND_KATZE: tierart,                                          // "hund" oder "katze"
-                TIERNAME: tiername || '',
-                FUTTERCHECK_SCORE: score,                                     // Zahl 0–100
-                FUTTERCHECK_FUTTER: FUTTER_LABELS[answers['futter']] || answers['futter'] || '',
-                PARTNER_INTERESSE: PARTNER_INTERESSE_MAP[partnerInteresse] || 'Kunde',  // "Stark", "Leicht", "Kunde"
-                FUTTERCHECK_FARB_SCORE: profile,                              // "gruen", "gelb", "rot"
-                SMS: answers['phone'] || ''
-            },
-            includeListIds: [BREVO_LIST_ID],
-            templateId: parseInt(DOI_TEMPLATE_ID),
-            redirectionUrl: DOI_REDIRECTION_URL
-        };
+                const response = await fetch('https://api.brevo.com/v3/contacts', {
+                    method: 'POST',
+                    headers: {
+                        'accept': 'application/json',
+                        'content-type': 'application/json',
+                        'api-key': BREVO_API_KEY
+                    },
+                    body: JSON.stringify(attrPayload)
+                });
 
-        try {
-            const response = await fetch('https://api.brevo.com/v3/contacts/doubleOptinConfirmation', {
-                method: 'POST',
-                headers: {
-                    'accept': 'application/json',
-                    'content-type': 'application/json',
-                    'api-key': BREVO_API_KEY
-                },
-                body: JSON.stringify(payload)
-            });
-
-            if (response.ok || response.status === 201 || response.status === 204) {
-                console.log('✅ DOI-Kontakt angelegt – Bestätigungsmail wird von Brevo versendet');
-                console.log('📦 Payload:', JSON.stringify(payload, null, 2));
-            } else {
-                const errData = await response.json().catch(() => ({}));
-                console.warn('⚠️ Brevo-Antwort:', response.status, errData);
-
-                // Fallback: Falls DOI fehlschlägt (z.B. Template-ID ungültig),
-                // versuche direktes Anlegen, damit kein Lead verloren geht
-                if (response.status >= 400) {
-                    console.warn('🔄 Fallback: Versuche direktes Anlegen ohne DOI …');
-                    await sendToBrevoFallback(payload);
+                if (response.ok || response.status === 201 || response.status === 204) {
+                    console.log('✅ Brevo API: Custom-Attribute gesetzt');
+                    console.log('📦 Attribute:', JSON.stringify(attrPayload.attributes, null, 2));
+                } else {
+                    const errData = await response.json().catch(() => ({}));
+                    console.warn('⚠️ Brevo API:', response.status, errData);
                 }
+            } catch (err) {
+                console.error('❌ Brevo API Fehler:', err);
             }
+        }
+
+        // =============================================
+        // SCHRITT 2: Brevo DOI-Formular absenden (sibforms)
+        // =============================================
+        // Das offizielle Brevo-Formular löst die DOI-Bestätigungsmail aus.
+        // Submission erfolgt via verstecktes <form> + sibforms main.js
+        try {
+            submitBrevoDOIForm();
         } catch (err) {
-            console.error('❌ Brevo-Fehler:', err);
+            console.error('❌ DOI-Formular Fehler:', err);
         }
     }
 
-    // Fallback: Direktes Anlegen ohne DOI (damit kein Lead verloren geht)
-    async function sendToBrevoFallback(doiPayload) {
-        try {
-            const fallbackPayload = {
-                email: doiPayload.email,
-                attributes: doiPayload.attributes,
-                listIds: [BREVO_LIST_ID],
-                updateEnabled: true
-            };
-            const resp = await fetch('https://api.brevo.com/v3/contacts', {
-                method: 'POST',
-                headers: {
-                    'accept': 'application/json',
-                    'content-type': 'application/json',
-                    'api-key': BREVO_API_KEY
-                },
-                body: JSON.stringify(fallbackPayload)
-            });
-            if (resp.ok || resp.status === 201 || resp.status === 204) {
-                console.log('✅ Fallback: Kontakt direkt angelegt (ohne DOI)');
-            } else {
-                const e = await resp.json().catch(() => ({}));
-                console.warn('⚠️ Fallback fehlgeschlagen:', resp.status, e);
-            }
-        } catch (err) {
-            console.error('❌ Fallback-Fehler:', err);
+    // Füllt das versteckte Brevo-DOI-Formular und löst den Submit aus
+    function submitBrevoDOIForm() {
+        const form = document.getElementById('sib-form');
+        if (!form) {
+            console.warn('⚠️ Brevo DOI-Formular #sib-form nicht gefunden');
+            return;
         }
+
+        // Felder befüllen
+        const emailField = form.querySelector('#EMAIL');
+        const vornameField = form.querySelector('#VORNAME');
+        const smsField = form.querySelector('#SMS');
+
+        if (emailField) emailField.value = answers['email'] || '';
+        if (vornameField) vornameField.value = answers['vorname'] || '';
+
+        // Telefon: Brevo erwartet die Nummer ohne Ländervorwahl-Prefix
+        if (smsField && answers['phone']) {
+            let phone = answers['phone'].replace(/\s+/g, '');
+            // Entferne führende 0 oder +49
+            if (phone.startsWith('+49')) phone = phone.substring(3);
+            else if (phone.startsWith('0049')) phone = phone.substring(4);
+            else if (phone.startsWith('0')) phone = phone.substring(1);
+            smsField.value = phone;
+        }
+
+        console.log('📨 DOI-Formular wird abgesendet …');
+
+        // Trigger submit – sibforms main.js intercepted das Event
+        // und sendet es per AJAX an die sibforms-URL
+        const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+        form.dispatchEvent(submitEvent);
     }
     
     // ==========================================
@@ -996,6 +997,102 @@
         lucide.createIcons();
     });
     </script>
+
+    <!-- ============================================ -->
+    <!-- VERSTECKTES BREVO DOI-FORMULAR               -->
+    <!-- ============================================ -->
+    <!-- Dieses Formular ist unsichtbar. Es wird programmatisch -->
+    <!-- von submitBrevoDOIForm() ausgefüllt und abgesendet.    -->
+    <!-- sibforms main.js fängt den Submit ab und sendet AJAX.  -->
+    <div id="brevo-doi-hidden-wrapper" style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;" aria-hidden="true">
+        <div class="sib-form">
+            <div id="sib-form-container" class="sib-form-container">
+                <div id="error-message" class="sib-form-message-panel" style="display:none;">
+                    <div class="sib-form-message-panel__text sib-form-message-panel__text--center">
+                        <span class="sib-form-message-panel__inner-text">Fehler</span>
+                    </div>
+                </div>
+                <div id="success-message" class="sib-form-message-panel" style="display:none;">
+                    <div class="sib-form-message-panel__text sib-form-message-panel__text--center">
+                        <span class="sib-form-message-panel__inner-text">Erfolgreich</span>
+                    </div>
+                </div>
+                <div id="sib-container" class="sib-container--medium sib-container--vertical" style="text-align:center;">
+                    <form id="sib-form" method="POST" action="https://527052f3.sibforms.com/serve/MUIFAEsoUsu2lQEwZbEGWqu3v6u9wL2SIPPUymK-A_Vc0QPh5brKiyc__E3MTjN9YYhO3Tqv-YtqYTJeAH6h3IV0Mt5ECrXtrWv73icuhdF0rgKNrVbQDxNTrQLccP0-cvUBbw9TcGjJobMlR1757jpWbQmfb6FPlxkFczQhk0UQ5mCi5IIPD5GZPTV7gIyGgCy2PSFGJ-ObCxEZ1g==" data-type="subscription">
+                        <div class="sib-input sib-form-block">
+                            <div class="form__entry entry_block">
+                                <div class="form__label-row">
+                                    <div class="entry__field">
+                                        <input class="input" type="text" id="VORNAME" name="VORNAME" autocomplete="off" data-required="true" required />
+                                    </div>
+                                </div>
+                                <label class="entry__error entry__error--primary"></label>
+                            </div>
+                        </div>
+                        <div class="sib-input sib-form-block">
+                            <div class="form__entry entry_block">
+                                <div class="form__label-row">
+                                    <div class="entry__field">
+                                        <input class="input" type="text" id="EMAIL" name="EMAIL" autocomplete="off" data-required="true" required />
+                                    </div>
+                                </div>
+                                <label class="entry__error entry__error--primary"></label>
+                            </div>
+                        </div>
+                        <div class="sib-sms-field sib-form-block">
+                            <div class="form__entry entry_block">
+                                <div class="form__label-row">
+                                    <div class="sib-sms-input-wrapper" style="direction:ltr">
+                                        <div class="sib-sms-input" data-placeholder="WhatsApp" data-country-code="DE" data-value="" data-attributename="SMS">
+                                            <div class="entry__field">
+                                                <select class="input" name="SMS__COUNTRY_CODE">
+                                                    <option value="+49" selected>+49 DE</option>
+                                                    <option value="+43">+43 AT</option>
+                                                    <option value="+41">+41 CH</option>
+                                                </select>
+                                            </div>
+                                            <div class="entry__field" style="width:100%">
+                                                <input type="tel" class="input" id="SMS" name="SMS" autocomplete="off" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <label class="entry__error entry__error--primary"></label>
+                                <label class="entry__error entry__error--secondary"></label>
+                            </div>
+                        </div>
+                        <!-- Honeypot (Anti-Bot) -->
+                        <input type="text" name="email_address_check" value="" class="input--hidden">
+                        <!-- Locale -->
+                        <input type="hidden" name="locale" value="de">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Brevo sibforms JS – verarbeitet das DOI-Formular -->
+    <link rel="stylesheet" href="https://sibforms.com/forms/end-form/build/sib-styles.css">
+    <script>
+        window.REQUIRED_CODE_ERROR_MESSAGE = 'Wähle bitte einen Ländervorwahl aus.';
+        window.LOCALE = 'de';
+        window.EMAIL_INVALID_MESSAGE = window.SMS_INVALID_MESSAGE = "Die eingegebenen Informationen sind nicht gültig.";
+        window.REQUIRED_ERROR_MESSAGE = "Dieses Feld darf nicht leer sein.";
+        window.GENERIC_INVALID_MESSAGE = "Die eingegebenen Informationen sind nicht gültig.";
+        window.INVALID_NUMBER = "Ungültige Nummer.";
+        window.INVALID_DATE = "Bitte gib ein gültiges Datum ein";
+        window.REQUIRED_MULTISELECT_MESSAGE = 'Wähle bitte mindestens eine Option aus';
+        window.translation = {
+            common: {
+                selectedList: '{quantity} Liste ausgewählt',
+                selectedLists: '{quantity} Listen ausgewählt',
+                selectedOption: '{quantity} ausgewählt',
+                selectedOptions: '{quantity} ausgewählt',
+            }
+        };
+        var AUTOHIDE = Boolean(0);
+    </script>
+    <script defer src="https://sibforms.com/forms/end-form/build/main.js"></script>
 
 </body>
 </html>

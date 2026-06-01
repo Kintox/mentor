@@ -11,10 +11,12 @@
 
 | Datei | Änderung |
 |---|---|
-| `futtercheck.html` | **Komplett neu geschrieben** – eigenständige Quiz-Seite mit Lead-Formular am Ende, Hybrid-Teaser-Ergebnis und Partner-Bridge. **DOI-Integration** über `/contacts/doubleOptinConfirmation` |
+| `futtercheck.html` | **Komplett neu geschrieben** – Quiz + Lead-Formular + DOI via Brevo-Formular (sibforms) + API für Custom-Attribute |
 | `index.html` | Brevo-Formular entfernt → durch saubere CTA-Card mit Link zu `futtercheck.html` ersetzt |
 | `bestaetigung-danke.html` | **Neu** – DOI-Bestätigungsseite nach Klick auf den E-Mail-Link (Reico-Design) |
 | `mails/doi_bestaetigung.html` | **Neu** – DOI-Mail-Vorlage für Brevo (Transactional Template) |
+| `.nojekyll` | **Neu** – Deaktiviert Jekyll für GitHub Pages (behebt Liquid-Syntax-Fehler) |
+| `DOI_INTEGRATION_FINAL.md` | **Neu** – Vollständige technische Doku der finalen DOI-Integration |
 
 ### Vorher → Nachher
 
@@ -59,11 +61,9 @@ Ergebnisseite (gleiche Datei, dynamisch)
         ├── 4 Benefit-Cards
         └── Partner-CTA: "Mehr über die Partnerschaft erfahren"
 
-    → Brevo API: POST /contacts/doubleOptinConfirmation
-    → Kontakt = Pending (nicht aktiv)
-    → Brevo sendet automatisch DOI-Mail (templateId)
+    → Schritt 1: Brevo API POST /contacts → Custom-Attribute setzen
+    → Schritt 2: Verstecktes Brevo-Formular → sibforms.com → DOI-Mail
     → Nutzer klickt Bestätigungslink in der Mail
-    → Redirect zu: bestaetigung-danke.html
     → Kontakt wird in Brevo aktiviert → Automation startet
 ```
 
@@ -71,26 +71,17 @@ Ergebnisseite (gleiche Datei, dynamisch)
 
 ## 3. Brevo-Integration (FINALE STRUKTUR)
 
-### API-Anbindung
+### API-Anbindung (Hybrid: API + Brevo-Formular)
 
-- **Methode:** Brevo REST API v3 (`POST /contacts/doubleOptinConfirmation`)
+- **Schritt 1 – Brevo REST API v3** (`POST /contacts`): Setzt alle Custom-Attribute
+- **Schritt 2 – Brevo DOI-Formular** (sibforms.com): Löst die DOI-Bestätigungsmail aus
 - **API-Key:** Im Code als gesplittetes Array (GitHub Push Protection)
 - **Listen-ID:** `5`
-- **DOI aktiviert:** Kontakte werden mit Pending-Status angelegt → Brevo sendet automatisch DOI-Mail → Kontakt erst nach Bestätigung aktiv
+- **Kein Platzhalter mehr nötig** – DOI_TEMPLATE_ID entfällt, da das offizielle Brevo-Formular verwendet wird
 
-### ⚠️ PLATZHALTER – Vor dem Live-Gang ersetzen!
+> ℹ️ Für die vollständige technische Dokumentation der DOI-Integration siehe `DOI_INTEGRATION_FINAL.md`
 
-| Platzhalter | Wo im Code | Was eintragen |
-|---|---|---|
-| `DOI_TEMPLATE_ID` | `futtercheck.html`, Zeile ~227 | Die **numerische ID** des DOI-Mail-Templates in Brevo (Transactional → Templates → ID). Beispiel: `7` |
-
-**So findest du die Template-ID:**
-1. Brevo öffnen → **Transactional** → **Templates**
-2. DOI-Vorlage (`doi_bestaetigung.html`) als neues Template hochladen/erstellen
-3. Die angezeigte **ID** (Zahl) kopieren
-4. In `futtercheck.html` die Zeile `const DOI_TEMPLATE_ID = 'DOI_TEMPLATE_ID';` durch `const DOI_TEMPLATE_ID = 7;` (deine ID) ersetzen
-
-### Finale JSON-Payload (Brevo DOI – `/contacts/doubleOptinConfirmation`)
+### Finale JSON-Payload (Brevo REST API – `/contacts`)
 
 ```json
 {
@@ -103,11 +94,10 @@ Ergebnisseite (gleiche Datei, dynamisch)
     "FUTTERCHECK_FUTTER": "Trockenfutter (Standard)",
     "PARTNER_INTERESSE": "Stark",
     "FUTTERCHECK_FARB_SCORE": "gelb",
-    "SMS": "0151..."
+    "SMS": "015678516818"
   },
-  "includeListIds": [5],
-  "templateId": 7,
-  "redirectionUrl": "https://cedricnitsch.de/bestaetigung-danke.html"
+  "listIds": [5],
+  "updateEnabled": true
 }
 ```
 
@@ -243,10 +233,11 @@ python3 -m http.server 3000
    - Farbe passend zur Punktzahl?
    - Personalisierung (Tiername + Vorname)?
 7. **Browser-Konsole öffnen** (F12) und prüfen:
-   - ✅ "DOI-Kontakt angelegt – Bestätigungsmail wird von Brevo versendet"
-   - 📦 Payload enthält `includeListIds`, `templateId`, `redirectionUrl`
+   - ✅ "Brevo API: Custom-Attribute gesetzt"
+   - 📦 Attribute korrekt (HUND_KATZE, FUTTERCHECK_SCORE, etc.)
+   - 📨 "DOI-Formular wird abgesendet …"
 8. **DOI-Mail prüfen:** E-Mail mit Bestätigungslink erhalten?
-9. **Bestätigungslink klicken** → Redirect zu `bestaetigung-danke.html`?
+9. **Bestätigungslink klicken** → Kontakt in Brevo aktiviert?
 10. **Brevo prüfen:** Kontakt jetzt **aktiv** mit allen 7 Attributen korrekt?
 
 ### Brevo-Prüfung (Kontakt-Details)
@@ -267,13 +258,13 @@ Nach dem Test sollte der Kontakt in Brevo folgende Attribute haben:
 
 ## 7. Offene Punkte / TODOs
 
-- [ ] **`DOI_TEMPLATE_ID` ersetzen** – DOI-Vorlage in Brevo hochladen → Template-ID in `futtercheck.html` eintragen
+- [x] ~~`DOI_TEMPLATE_ID` ersetzen~~ – Entfällt: DOI über offizielles Brevo-Formular (sibforms)
 - [ ] Brevo Listen-ID verifizieren (`BREVO_LIST_ID = 5`)
 - [ ] **Brevo Kategorie-Attribute anlegen** (siehe Abschnitt 3 oben – exakte Werte!)
 - [ ] Brevo Automations einrichten (Trigger: Kontakt bestätigt → Ergebnis-Mail + Partner-Sequenz)
 - [ ] Ergebnis-Mails erstellen (Mail1–Mail5 + Ergebnis-Mail je Score)
 - [ ] Datenschutz-Seite aktualisieren
-- [ ] End-to-End DOI-Test: Quiz → DOI-Mail erhalten → Bestätigen → `bestaetigung-danke.html` → Kontakt aktiv
+- [ ] End-to-End DOI-Test: Quiz → DOI-Mail erhalten → Bestätigen → Kontakt aktiv + alle Attribute korrekt
 
 ---
 
