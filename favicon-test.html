@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <!-- Favicons (absolute Pfade) -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/images/favicon-192.png">
+    <link rel="apple-touch-icon" href="/images/favicon-180.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Favicon-Test | Reico Futtercheck</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; background: #F7FAE0; color: #3A3D0C; max-width: 720px; margin: 0 auto; padding: 40px 20px; line-height: 1.6; }
+        h1 { color: #3A3D0C; }
+        .card { background: #fff; border: 2px solid #EEF5B2; border-radius: 12px; padding: 20px; margin: 16px 0; }
+        .icons { display: flex; gap: 24px; align-items: flex-end; flex-wrap: wrap; }
+        .icons figure { margin: 0; text-align: center; }
+        .icons img { display: block; margin: 0 auto 8px; background: repeating-conic-gradient(#eee 0% 25%, #fff 0% 50%) 50% / 16px 16px; border: 1px solid #ddd; }
+        code { background: #EEF5B2; padding: 2px 6px; border-radius: 4px; }
+        .status { font-weight: 600; }
+        .ok { color: #2e7d32; }
+        .fail { color: #c62828; }
+    </style>
+</head>
+<body>
+    <h1>🐾 Favicon-Test</h1>
+    <p>Diese Seite prüft, ob alle Favicon-Dateien auf dem Server erreichbar sind. Schau auch in den <strong>Browser-Tab</strong> – dort sollte die Reico-Pfote erscheinen.</p>
+
+    <div class="card">
+        <h2>Direkte Bild-Vorschau</h2>
+        <p>Wenn die Bilder unten sichtbar sind, liegen die Dateien korrekt auf dem Server:</p>
+        <div class="icons">
+            <figure><img src="/favicon.ico" width="32" height="32" alt="favicon.ico"><figcaption><code>/favicon.ico</code></figcaption></figure>
+            <figure><img src="/images/favicon-16.png" width="16" height="16" alt="16"><figcaption><code>/images/favicon-16.png</code></figcaption></figure>
+            <figure><img src="/images/favicon-32.png" width="32" height="32" alt="32"><figcaption><code>/images/favicon-32.png</code></figcaption></figure>
+            <figure><img src="/images/favicon-180.png" width="64" height="64" alt="180"><figcaption><code>/images/favicon-180.png</code></figcaption></figure>
+            <figure><img src="/images/favicon-192.png" width="64" height="64" alt="192"><figcaption><code>/images/favicon-192.png</code></figcaption></figure>
+            <figure><img src="/images/favicon-512.png" width="64" height="64" alt="512"><figcaption><code>/images/favicon-512.png</code></figcaption></figure>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Automatischer Erreichbarkeits-Check</h2>
+        <ul id="results"><li>Prüfe…</li></ul>
+    </div>
+
+    <div class="card">
+        <h2>Falls das Favicon nicht im Tab erscheint</h2>
+        <ol>
+            <li>Browser-Cache leeren: <strong>Strg + F5</strong> (Windows) bzw. <strong>Cmd + Shift + R</strong> (Mac).</li>
+            <li>Seite in einem <strong>privaten/Inkognito-Fenster</strong> öffnen.</li>
+            <li>Sicherstellen, dass <code>favicon.ico</code> wirklich im <strong>Root</strong> des Servers liegt.</li>
+        </ol>
+    </div>
+
+    <script>
+        const files = [
+            "/favicon.ico",
+            "/images/favicon-16.png",
+            "/images/favicon-32.png",
+            "/images/favicon-180.png",
+            "/images/favicon-192.png",
+            "/images/favicon-512.png",
+            "/site.webmanifest"
+        ];
+        const ul = document.getElementById("results");
+        ul.innerHTML = "";
+        files.forEach(async (f) => {
+            const li = document.createElement("li");
+            li.innerHTML = `<code>${f}</code> … <span class="status">lädt…</span>`;
+            ul.appendChild(li);
+            try {
+                const res = await fetch(f, { cache: "no-store" });
+                const span = li.querySelector(".status");
+                if (res.ok) { span.textContent = "✓ erreichbar (" + res.status + ")"; span.className = "status ok"; }
+                else { span.textContent = "✗ Fehler (" + res.status + ")"; span.className = "status fail"; }
+            } catch (e) {
+                const span = li.querySelector(".status");
+                span.textContent = "✗ nicht erreichbar"; span.className = "status fail";
+            }
+        });
+    </script>
+</body>
+</html>
