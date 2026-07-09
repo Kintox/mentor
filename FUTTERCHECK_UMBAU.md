@@ -253,3 +253,4 @@ Nach dem Test sollte der Kontakt in Brevo folgende Attribute haben:
 - **Tailwind CSS:** Via CDN
 - **Brevo-Formular:** Versteckt im DOM, sibforms.com JS/CSS für AJAX-Submit (kein API-Key nötig)
 - **DSGVO:** Checkbox-Pflicht, Datenschutz-Link, DOI per E-Mail
+- **Favicon:** Reico-Design (Tierpfote mit Herz) in allen Root-HTML-Seiten eingebunden. Dateien: `favicon.ico` (Root, für Legacy-Browser), `images/favicon-16/32/180/192/512.png`, `site.webmanifest` (PWA). Transparenter Hintergrund, Reico-Farben (#3A3D0C / #FF9888 / #F7FAE0).
