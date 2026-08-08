@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <!-- Favicons (absolute Pfade fuer maximale Kompatibilitaet) -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/images/favicon-192.png">
+    <link rel="apple-touch-icon" href="/images/favicon-180.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Kostenloser Futtercheck für Hunde & Katzen – Finde heraus, ob dein Tier optimal ernährt ist. Individuelle Auswertung in 3 Minuten.">
+    <meta name="robots" content="index, follow">
+    <title>Kostenloser Futtercheck – Ist dein Tier optimal ernährt? | Cedric Nitsch</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Poppins', 'sans-serif'] },
+                    colors: {
+                        reico: {
+                            alge: '#3A3D0C',
+                            chlorophyll: '#EEF5B2',
+                            chlorophyllDark: '#E7F191',
+                            kalk: '#EAE2D5',
+                            kristall: '#FF9888',
+                            text: '#2C2C2C',
+                            light: '#FAFAF8'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html, body { overflow-x: hidden; max-width: 100vw; }
+        
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .slide-up { animation: slideUp 0.5s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .pulse-glow { animation: pulseGlow 2s ease-in-out infinite; }
+        @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 0 0 rgba(255,152,136,0.4); } 50% { box-shadow: 0 0 0 12px rgba(255,152,136,0); } }
+        
+        .cta-primary {
+            background: linear-gradient(135deg, #FF9888 0%, #e07868 100%);
+            transition: all 0.3s ease;
+        }
+        .cta-primary:hover { transform: scale(1.03); box-shadow: 0 10px 30px -5px rgba(255,152,136,0.5); }
+        .cta-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+        
+        .cta-secondary {
+            background: linear-gradient(135deg, #3A3D0C 0%, #5a5e1a 100%);
+            transition: all 0.3s ease;
+        }
+        .cta-secondary:hover { transform: scale(1.03); box-shadow: 0 10px 30px -5px rgba(58,61,12,0.4); }
+        
+        .whatsapp-btn {
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            transition: all 0.3s ease;
+        }
+        .whatsapp-btn:hover { transform: scale(1.03); box-shadow: 0 10px 30px -5px rgba(37,211,102,0.4); }
+        
+        .option-card {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .option-card:hover { border-color: #FF9888; transform: translateY(-2px); box-shadow: 0 8px 25px -5px rgba(58,61,12,0.1); }
+        .option-card.selected { border-color: #FF9888; background: rgba(255,152,136,0.08); box-shadow: 0 0 0 3px rgba(255,152,136,0.2); }
+        
+        .symptom-chip {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .symptom-chip:hover { border-color: #FF9888; }
+        .symptom-chip.selected { border-color: #FF9888; background: rgba(255,152,136,0.1); color: #3A3D0C; }
+        
+        .progress-fill { transition: width 0.5s ease; }
+        
+        .score-circle {
+            stroke-dasharray: 283;
+            stroke-dashoffset: 283;
+            transition: stroke-dashoffset 1.5s ease-out;
+        }
+        
+        .result-card { animation: slideUp 0.6s ease-out; }
+        
+        .blur-teaser { filter: blur(6px); user-select: none; pointer-events: none; }
+        
+        /* Mobile touch targets */
+        @media (max-width: 640px) {
+            .option-card { min-height: 52px; }
+            .symptom-chip { min-height: 44px; padding: 10px 16px; }
+        }
+    </style>
+
+    <!-- Meta Pixel -->
+    <script>
+        !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init','1267711028899835');
+        fbq('track','PageView');
+    </script>
+</head>
+
+<body class="font-sans text-reico-text bg-reico-light min-h-screen">
+
+    <!-- ============================================ -->
+    <!-- HEADER / NAV (Mobile-First, minimal)         -->
+    <!-- ============================================ -->
+    <nav class="bg-white/95 backdrop-blur-sm border-b border-reico-kalk sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-4 py-3 sm:py-4 flex justify-between items-center">
+            <div>
+                <a href="https://cedricnitsch.de" class="text-base sm:text-lg font-bold text-reico-alge tracking-tight">Cedric Nitsch</a>
+                <span class="block text-[10px] sm:text-xs text-reico-alge/60 font-medium">Reico Fachberater</span>
+            </div>
+            <a href="https://wa.me/4915678516818?text=Hi%20Cedric,%20ich%20habe%20eine%20Frage%20zum%20Futtercheck!" target="_blank"
+               class="whatsapp-btn text-white px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-semibold flex items-center gap-1.5">
+                <i data-lucide="message-circle" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
+                <span class="hidden xs:inline">WhatsApp</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- ============================================ -->
+    <!-- MAIN QUIZ CONTAINER                          -->
+    <!-- ============================================ -->
+    <main class="max-w-2xl mx-auto px-4 py-6 sm:py-12">
+
+        <!-- Intro Screen -->
+        <div id="intro-screen" class="text-center fade-in">
+            <div class="text-5xl sm:text-6xl mb-4 sm:mb-6">🐾</div>
+            <h1 class="text-2xl sm:text-4xl font-extrabold text-reico-alge mb-3 sm:mb-4 leading-tight">
+                Kostenloser Futtercheck
+            </h1>
+            <p class="text-base sm:text-lg text-reico-text/70 mb-3 max-w-lg mx-auto">
+                Finde in <strong>3 Minuten</strong> heraus, ob dein Hund oder deine Katze optimal ernährt ist.
+            </p>
+            <div class="flex flex-wrap justify-center gap-2 sm:gap-3 text-xs sm:text-sm text-reico-alge/70 font-medium mb-6 sm:mb-8">
+                <span class="flex items-center gap-1">✅ 100 % kostenlos</span>
+                <span class="flex items-center gap-1">✅ Sofortiges Ergebnis</span>
+                <span class="flex items-center gap-1">✅ Für Hunde & Katzen</span>
+            </div>
+            <button onclick="startQuiz()" class="cta-primary pulse-glow text-white px-8 sm:px-10 py-4 rounded-full text-base sm:text-lg font-bold shadow-xl inline-flex items-center gap-3">
+                <span>🐾</span>
+                <span>Jetzt Futtercheck starten</span>
+            </button>
+            <p class="mt-3 sm:mt-4 text-[10px] sm:text-xs text-reico-text/40">12 kurze Fragen · Dauert ca. 3 Minuten</p>
+            
+            <!-- Social Proof -->
+            <div class="mt-8 sm:mt-10 flex flex-wrap justify-center gap-4 sm:gap-6 text-xs sm:text-sm text-reico-text/50">
+                <span class="flex items-center gap-1.5">⭐ 4.9/5 Bewertung</span>
+                <span class="flex items-center gap-1.5">👥 8.500+ Partner</span>
+                <span class="flex items-center gap-1.5">🇩🇪 Seit 30+ Jahren</span>
+            </div>
+        </div>
+
+        <!-- Quiz Container (hidden initially) -->
+        <div id="quiz-container" class="hidden">
+            
+            <!-- Progress Bar -->
+            <div class="mb-6 sm:mb-8">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-xs sm:text-sm font-semibold text-reico-alge" id="progress-label">Frage 1 von 13</span>
+                    <span class="text-xs sm:text-sm font-semibold text-reico-kristall" id="progress-pct">0%</span>
+                </div>
+                <div class="w-full bg-reico-kalk rounded-full h-2 sm:h-2.5">
+                    <div id="progress-bar" class="bg-reico-kristall h-2 sm:h-2.5 rounded-full progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Question Area -->
+            <div id="question-area" class="bg-white rounded-2xl sm:rounded-3xl shadow-lg border border-reico-kalk/40 p-5 sm:p-10 min-h-[280px] sm:min-h-[320px]">
+                <!-- Dynamically filled -->
+            </div>
+
+            <!-- Navigation -->
+            <div class="flex justify-between items-center mt-4 sm:mt-6">
+                <button id="btn-back" onclick="prevQuestion()" class="text-reico-alge/60 hover:text-reico-alge font-semibold text-xs sm:text-sm flex items-center gap-1 transition-colors disabled:opacity-30" disabled>
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Zurück
+                </button>
+                <button id="btn-next" onclick="nextQuestion()" class="cta-primary text-white px-6 sm:px-8 py-3 rounded-full font-bold shadow-lg flex items-center gap-2 text-sm sm:text-base disabled:opacity-40" disabled>
+                    <span id="btn-next-text">Weiter</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Screen (hidden initially) -->
+        <div id="result-screen" class="hidden">
+            <!-- Dynamically filled -->
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-reico-kalk py-4 sm:py-6 mt-8 sm:mt-12">
+        <div class="max-w-4xl mx-auto px-4 text-center text-[10px] sm:text-xs text-reico-text/40 space-y-1.5">
+            <p>&copy; 2026 Cedric Nitsch &middot; Reico Fachberater & Business Mentor</p>
+            <p>
+                <a href="https://cedricnitsch.de/datenschutz.html" class="underline hover:text-reico-alge">Datenschutz</a> &middot; 
+                <a href="https://cedricnitsch.de/impressum.html" class="underline hover:text-reico-alge">Impressum</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- ============================================ -->
+    <!-- QUIZ LOGIC                                   -->
+    <!-- ============================================ -->
+    <script>
+    // ==========================================
+    // CONFIGURATION
+    // ==========================================
+    
+    // Brevo Formular-Action (DOI via sibforms)
+    const BREVO_FORM_ACTION = 'https://527052f3.sibforms.com/serve/MUIFAEsoUsu2lQEwZbEGWqu3v6u9wL2SIPPUymK-A_Vc0QPh5brKiyc__E3MTjN9YYhO3Tqv-YtqYTJeAH6h3IV0Mt5ECrXtrWv73icuhdF0rgKNrVbQDxNTrQLccP0-cvUBbw9TcGjJobMlR1757jpWbQmfb6FPlxkFczQhk0UQ5mCi5IIPD5GZPTV7gIyGgCy2PSFGJ-ObCxEZ1g==';
+    const WHATSAPP_NUMBER = '4915678516818';
+    
+    // ==========================================
+    // STATE
+    // ==========================================
+    let currentStep = 0;
+    let answers = {};
+    let tierart = '';
+    let tiername = '';
+    
+    // ==========================================
+    // QUESTIONS (13 Fragen: 10 Quiz + Partner-Frage + Vorname + E-Mail/DSGVO)
+    // ==========================================
+    const questions = [
+        // Q0: Tierart
+        {
+            id: 'tierart',
+            title: 'Welches Tier möchtest du checken?',
+            subtitle: 'Der Futtercheck ist für Hunde und Katzen verfügbar.',
+            type: 'single',
+            options: [
+                { label: '🐕 Hund', value: 'hund' },
+                { label: '🐱 Katze', value: 'katze' }
+            ],
+            score: null
+        },
+        // Q1: Tiername
+        {
+            id: 'tiername',
+            title: 'Wie heißt dein {tierart}?',
+            subtitle: 'So können wir das Ergebnis persönlich gestalten.',
+            type: 'text',
+            placeholder: 'Name deines Tieres',
+            score: null
+        },
+        // Q2: Alter
+        {
+            id: 'alter',
+            title: 'Wie alt ist {tiername}?',
+            subtitle: 'Das Alter beeinflusst den Nährstoffbedarf.',
+            type: 'single',
+            options: [
+                { label: '👶 Welpe / Kitten (unter 1 Jahr)', value: 'welpe', points: 10 },
+                { label: '🐾 Jung (1–3 Jahre)', value: 'jung', points: 10 },
+                { label: '💪 Erwachsen (4–7 Jahre)', value: 'erwachsen', points: 10 },
+                { label: '👴 Senior (8+ Jahre)', value: 'senior', points: 5 }
+            ]
+        },
+        // Q3: Gewicht/Größe
+        {
+            id: 'gewicht',
+            title: 'Wie groß/schwer ist {tiername}?',
+            subtitle: 'Eine grobe Einschätzung reicht.',
+            type: 'single',
+            optionsByTier: {
+                hund: [
+                    { label: '🐕 Klein (bis 10 kg)', value: 'klein', points: 10 },
+                    { label: '🐕 Mittel (10–25 kg)', value: 'mittel', points: 10 },
+                    { label: '🐕 Groß (25–40 kg)', value: 'gross', points: 10 },
+                    { label: '🐕 Sehr groß (über 40 kg)', value: 'sehr_gross', points: 5 }
+                ],
+                katze: [
+                    { label: '😺 Normalgewichtig', value: 'normal', points: 10 },
+                    { label: '😸 Etwas zu schwer', value: 'leicht_uebergewicht', points: 5 },
+                    { label: '🐱 Deutlich übergewichtig', value: 'uebergewicht', points: 0 },
+                    { label: '🐱 Untergewichtig', value: 'untergewicht', points: 0 }
+                ]
+            }
+        },
+        // Q4: Aktivität
+        {
+            id: 'aktivitaet',
+            title: 'Wie aktiv ist {tiername}?',
+            subtitle: 'Aktivität bestimmt den Energiebedarf.',
+            type: 'single',
+            options: [
+                { label: '🏃 Sehr aktiv (viel Bewegung/Sport)', value: 'sehr_aktiv', points: 10 },
+                { label: '🚶 Normal aktiv', value: 'normal', points: 10 },
+                { label: '🛋️ Eher ruhig / wenig Bewegung', value: 'ruhig', points: 5 },
+                { label: '😴 Kaum Bewegung', value: 'kaum', points: 0 }
+            ]
+        },
+        // Q5: Aktuelles Futter
+        {
+            id: 'futter',
+            title: 'Was fütterst du {tiername} hauptsächlich?',
+            subtitle: 'Bitte wähle die Option, die am besten passt.',
+            type: 'single',
+            options: [
+                { label: '🥩 Hochwertiges Nassfutter (hoher Fleischanteil)', value: 'nassfutter_premium', points: 15 },
+                { label: '🦴 BARF / Rohfütterung', value: 'barf', points: 12 },
+                { label: '🍳 Selbstgekocht', value: 'selbstgekocht', points: 10 },
+                { label: '🏷️ Trockenfutter (Premium, getreidefrei)', value: 'trockenfutter_premium', points: 8 },
+                { label: '🛒 Trockenfutter (Standard / Supermarkt)', value: 'trockenfutter_standard', points: 3 },
+                { label: '🔄 Mischfütterung (Nass + Trocken)', value: 'misch', points: 6 },
+                { label: '❓ Ich bin unsicher / wechsle oft', value: 'unsicher', points: 2 }
+            ]
+        },
+        // Q6: Symptome (Multi)
+        {
+            id: 'symptome',
+            title: 'Zeigt {tiername} eines dieser Symptome?',
+            subtitle: 'Mehrfachauswahl möglich. Wähle alles, was zutrifft.',
+            type: 'multi',
+            options: [
+                { label: '✅ Keine – alles prima!', value: 'keine', points: 0, exclusive: true },
+                { label: '🐾 Juckreiz / häufiges Kratzen', value: 'juckreiz', points: -5 },
+                { label: '🪮 Stumpfes / schuppiges Fell', value: 'fell', points: -5 },
+                { label: '💩 Verdauungsprobleme', value: 'verdauung', points: -8 },
+                { label: '😮‍💨 Mundgeruch', value: 'mundgeruch', points: -3 },
+                { label: '⚖️ Übergewicht', value: 'uebergewicht', points: -5 },
+                { label: '😴 Energielosigkeit', value: 'energie', points: -5 },
+                { label: '🩹 Hautprobleme', value: 'haut', points: -5 },
+                { label: '👂 Ohrenprobleme', value: 'ohren', points: -3 },
+                { label: '🤧 Allergien', value: 'allergie', points: -8 }
+            ]
+        },
+        // Q7: Allergien
+        {
+            id: 'allergien',
+            title: 'Hat {tiername} bekannte Allergien oder Unverträglichkeiten?',
+            subtitle: '',
+            type: 'single',
+            options: [
+                { label: '✅ Nein, keine bekannt', value: 'keine', points: 10 },
+                { label: '⚠️ Ja, aber wir haben es im Griff', value: 'ja_im_griff', points: 5 },
+                { label: '❌ Ja, und es ist ein Problem', value: 'ja_problem', points: 0 },
+                { label: '🤷 Ich bin mir nicht sicher', value: 'unsicher', points: 3 }
+            ]
+        },
+        // Q8: Leckerlis
+        {
+            id: 'leckerlis',
+            title: 'Wie oft bekommt {tiername} Leckerlis oder Tischreste?',
+            subtitle: '',
+            type: 'single',
+            options: [
+                { label: '🥕 Selten / gesunde Leckerlis', value: 'selten', points: 10 },
+                { label: '🍖 Gelegentlich Leckerlis', value: 'gelegentlich', points: 7 },
+                { label: '🍬 Täglich mehrere Leckerlis', value: 'taeglich', points: 3 },
+                { label: '🍕 Regelmäßig Tischreste', value: 'tischreste', points: 0 }
+            ]
+        },
+        // Q9: Zufriedenheit
+        {
+            id: 'zufriedenheit',
+            title: 'Wie zufrieden bist du mit der Ernährung von {tiername}?',
+            subtitle: 'Dein Bauchgefühl zählt.',
+            type: 'single',
+            options: [
+                { label: '😊 Sehr zufrieden – alles top', value: 'sehr_zufrieden', points: 10 },
+                { label: '😐 Ganz okay, aber unsicher', value: 'okay', points: 5 },
+                { label: '😕 Nicht wirklich zufrieden', value: 'unzufrieden', points: 2 },
+                { label: '😟 Unzufrieden – suche bessere Lösung', value: 'suche', points: 0 }
+            ]
+        },
+        // Q10: Partner-Interesse (strategisch!)
+        {
+            id: 'partner_interesse',
+            title: 'Noch eine letzte Frage, bevor wir auswerten...',
+            subtitle: 'Viele unserer Kunden empfehlen Reico weiter – und verdienen dabei.',
+            type: 'single',
+            options: [
+                { label: '💡 Ja, klingt spannend – ich möchte mehr erfahren', value: 'ja_interesse' },
+                { label: '🤔 Vielleicht – zeigt mir erstmal das Ergebnis', value: 'vielleicht' },
+                { label: '🐾 Nein danke, nur für mein eigenes Tier', value: 'nein' }
+            ],
+            score: null
+        },
+        // Q11: Vorname
+        {
+            id: 'vorname',
+            title: 'Fast geschafft! Wie heißt du?',
+            subtitle: 'Damit wir dein Ergebnis persönlich gestalten können.',
+            type: 'text',
+            placeholder: 'Dein Vorname',
+            score: null
+        },
+        // Q12: Lead-Formular (E-Mail + Telefon + DSGVO)
+        {
+            id: 'lead_form',
+            title: 'Wohin dürfen wir dein Ergebnis schicken?',
+            subtitle: 'Du siehst dein Kurzeergebnis sofort – die ausführliche Auswertung mit Tipps erhältst du per E-Mail (Double-Opt-in).',
+            type: 'lead_form',
+            score: null
+        }
+    ];
+    
+    const totalSteps = questions.length;
+    
+    // ==========================================
+    // QUIZ FLOW
+    // ==========================================
+    
+    function startQuiz() {
+        document.getElementById('intro-screen').classList.add('hidden');
+        document.getElementById('quiz-container').classList.remove('hidden');
+        renderQuestion();
+        if (typeof fbq !== 'undefined') fbq('track', 'ViewContent', { content_name: 'Futtercheck Started' });
+    }
+    
+    function replacePlaceholders(text) {
+        let t = text;
+        if (tierart === 'hund') t = t.replace('{tierart}', 'Hund');
+        else if (tierart === 'katze') t = t.replace('{tierart}', 'Katze');
+        else t = t.replace('{tierart}', 'Tier');
+        t = t.replace(/{tiername}/g, tiername || 'dein Tier');
+        return t;
+    }
+    
+    function renderQuestion() {
+        const q = questions[currentStep];
+        const area = document.getElementById('question-area');
+        
+        // Update progress
+        const pct = Math.round((currentStep / totalSteps) * 100);
+        document.getElementById('progress-bar').style.width = pct + '%';
+        document.getElementById('progress-pct').textContent = pct + '%';
+        document.getElementById('progress-label').textContent = `Frage ${currentStep + 1} von ${totalSteps}`;
+        
+        // Back button
+        document.getElementById('btn-back').disabled = currentStep === 0;
+        
+        // Next button text
+        const isLast = currentStep === totalSteps - 1;
+        document.getElementById('btn-next-text').textContent = isLast ? 'Ergebnis anzeigen 🎉' : 'Weiter';
+        
+        let html = `<div class="fade-in">`;
+        html += `<h2 class="text-lg sm:text-2xl font-bold text-reico-alge mb-1.5 sm:mb-2">${replacePlaceholders(q.title)}</h2>`;
+        if (q.subtitle) html += `<p class="text-reico-text/60 text-xs sm:text-sm mb-4 sm:mb-6">${replacePlaceholders(q.subtitle)}</p>`;
+        else html += `<div class="mb-4 sm:mb-6"></div>`;
+        
+        if (q.type === 'single') {
+            const opts = q.optionsByTier ? q.optionsByTier[tierart] || q.optionsByTier['hund'] : q.options;
+            html += `<div class="space-y-2.5 sm:space-y-3">`;
+            opts.forEach((opt, i) => {
+                const selected = answers[q.id] === opt.value ? 'selected' : '';
+                html += `<div class="option-card ${selected} border-2 border-reico-kalk rounded-xl p-3.5 sm:p-4 flex items-center gap-3" onclick="selectSingle('${q.id}', '${opt.value}', ${i})">
+                    <div class="w-5 h-5 rounded-full border-2 ${selected ? 'border-reico-kristall bg-reico-kristall' : 'border-reico-kalk'} flex items-center justify-center flex-shrink-0">
+                        ${selected ? '<div class="w-2 h-2 rounded-full bg-white"></div>' : ''}
+                    </div>
+                    <span class="font-medium text-sm sm:text-base">${opt.label}</span>
+                </div>`;
+            });
+            html += `</div>`;
+        }
+        else if (q.type === 'multi') {
+            const selected = answers[q.id] || [];
+            html += `<div class="flex flex-wrap gap-2">`;
+            q.options.forEach((opt) => {
+                const isSelected = selected.includes(opt.value) ? 'selected' : '';
+                html += `<div class="symptom-chip ${isSelected} border-2 border-reico-kalk rounded-full px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium" onclick="toggleMulti('${q.id}', '${opt.value}', ${opt.exclusive || false})">${opt.label}</div>`;
+            });
+            html += `</div>`;
+        }
+        else if (q.type === 'text') {
+            const val = answers[q.id] || '';
+            html += `<input type="text" id="input-${q.id}" value="${val}" placeholder="${q.placeholder}" 
+                class="w-full px-4 sm:px-5 py-3.5 sm:py-4 rounded-xl border-2 border-reico-kalk bg-reico-light text-reico-text text-base sm:text-lg focus:border-reico-kristall focus:outline-none focus:ring-2 focus:ring-reico-kristall/20 transition-all" 
+                oninput="onTextInput('${q.id}', this.value)" autocomplete="off">`;
+        }
+        else if (q.type === 'lead_form') {
+            const emailVal = answers['email'] || '';
+            const phoneVal = answers['phone'] || '';
+            html += `
+                <div class="space-y-3.5 sm:space-y-4">
+                    <div>
+                        <label class="block text-xs sm:text-sm font-semibold text-reico-alge mb-1 sm:mb-1.5">E-Mail-Adresse *</label>
+                        <input type="email" id="input-email" value="${emailVal}" placeholder="deine@email.de" 
+                            class="w-full px-4 sm:px-5 py-3.5 sm:py-4 rounded-xl border-2 border-reico-kalk bg-reico-light text-reico-text text-sm sm:text-base focus:border-reico-kristall focus:outline-none focus:ring-2 focus:ring-reico-kristall/20 transition-all" 
+                            oninput="onTextInput('email', this.value)" autocomplete="email">
+                    </div>
+                    <div>
+                        <label class="block text-xs sm:text-sm font-semibold text-reico-alge mb-1 sm:mb-1.5">Telefon/WhatsApp <span class="text-reico-text/40 font-normal">(optional – für schnellere Beratung)</span></label>
+                        <input type="tel" id="input-phone" value="${phoneVal}" placeholder="z.B. 0156 78516818" 
+                            class="w-full px-4 sm:px-5 py-3.5 sm:py-4 rounded-xl border-2 border-reico-kalk bg-reico-light text-reico-text text-sm sm:text-base focus:border-reico-kristall focus:outline-none focus:ring-2 focus:ring-reico-kristall/20 transition-all" 
+                            oninput="onTextInput('phone', this.value)" autocomplete="tel">
+                    </div>
+                    <div class="flex items-start gap-2.5 sm:gap-3 mt-3 sm:mt-4">
+                        <input type="checkbox" id="dsgvo-check" class="mt-0.5 sm:mt-1 w-4 h-4 sm:w-5 sm:h-5 rounded border-reico-kalk accent-[#FF9888] cursor-pointer flex-shrink-0" onchange="onDSGVO()" ${answers['dsgvo'] ? 'checked' : ''}>
+                        <label for="dsgvo-check" class="text-[10px] sm:text-xs text-reico-text/60 cursor-pointer leading-relaxed">
+                            Ich stimme der Verarbeitung meiner Daten gemäß der 
+                            <a href="https://cedricnitsch.de/datenschutz.html" target="_blank" class="underline text-reico-alge hover:text-reico-kristall">Datenschutzerklärung</a> 
+                            zu. Ich erhalte eine Bestätigungsmail (Double-Opt-in) und kann meine Einwilligung jederzeit widerrufen. *
+                        </label>
+                    </div>
+                </div>`;
+        }
+        
+        html += `</div>`;
+        area.innerHTML = html;
+        
+        // Focus text inputs on render
+        if (q.type === 'text') {
+            setTimeout(() => document.getElementById('input-' + q.id)?.focus(), 100);
+        }
+        if (q.type === 'lead_form') {
+            setTimeout(() => document.getElementById('input-email')?.focus(), 100);
+        }
+        
+        updateNextButton();
+        lucide.createIcons();
+    }
+    
+    function selectSingle(id, value, idx) {
+        answers[id] = value;
+        if (id === 'tierart') tierart = value;
+        renderQuestion();
+    }
+    
+    function toggleMulti(id, value, exclusive) {
+        if (!answers[id]) answers[id] = [];
+        
+        if (exclusive) {
+            answers[id] = answers[id].includes(value) ? [] : [value];
+        } else {
+            answers[id] = answers[id].filter(v => {
+                const opt = questions[currentStep].options.find(o => o.value === v);
+                return !opt?.exclusive;
+            });
+            if (answers[id].includes(value)) {
+                answers[id] = answers[id].filter(v => v !== value);
+            } else {
+                answers[id].push(value);
+            }
+        }
+        renderQuestion();
+    }
+    
+    function onTextInput(id, value) {
+        answers[id] = value.trim();
+        if (id === 'tiername') tiername = value.trim();
+        updateNextButton();
+    }
+    
+    function onDSGVO() {
+        answers['dsgvo'] = document.getElementById('dsgvo-check')?.checked || false;
+        updateNextButton();
+    }
+    
+    function updateNextButton() {
+        const q = questions[currentStep];
+        let valid = false;
+        
+        if (q.type === 'single') valid = !!answers[q.id];
+        else if (q.type === 'multi') valid = (answers[q.id] || []).length > 0;
+        else if (q.type === 'text') valid = (answers[q.id] || '').length > 0;
+        else if (q.type === 'lead_form') {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            valid = emailRegex.test(answers['email'] || '') && answers['dsgvo'] === true;
+        }
+        
+        document.getElementById('btn-next').disabled = !valid;
+    }
+    
+    function nextQuestion() {
+        if (document.getElementById('btn-next').disabled) return;
+        
+        if (currentStep < totalSteps - 1) {
+            currentStep++;
+            renderQuestion();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+            showResult();
+        }
+    }
+    
+    function prevQuestion() {
+        if (currentStep > 0) {
+            currentStep--;
+            renderQuestion();
+        }
+    }
+    
+    // ==========================================
+    // SCORING
+    // ==========================================
+    
+    function calculateScore() {
+        let rawScore = 0;
+        const MAX_RAW = 85;
+        
+        // Questions with points: alter(Q2), gewicht(Q3), aktivitaet(Q4), futter(Q5), symptome(Q6), allergien(Q7), leckerlis(Q8), zufriedenheit(Q9)
+        const scoredQuestions = [
+            { idx: 2, id: 'alter' },
+            { idx: 4, id: 'aktivitaet' },
+            { idx: 5, id: 'futter' },
+            { idx: 7, id: 'allergien' },
+            { idx: 8, id: 'leckerlis' },
+            { idx: 9, id: 'zufriedenheit' }
+        ];
+        
+        scoredQuestions.forEach(({ idx, id }) => {
+            const q = questions[idx];
+            const opt = q.options.find(o => o.value === answers[id]);
+            rawScore += opt ? opt.points : 0;
+        });
+        
+        // Gewicht (dynamic by tier)
+        const gewichtQ = questions[3];
+        const gewichtOpts = gewichtQ.optionsByTier[tierart] || [];
+        const gewichtOpt = gewichtOpts.find(o => o.value === answers['gewicht']);
+        rawScore += gewichtOpt ? gewichtOpt.points : 0;
+        
+        // Symptome (special: multi-select with negative points)
+        const symptome = answers['symptome'] || [];
+        let symptomScore = 10;
+        if (!symptome.includes('keine')) {
+            const symptomQ = questions[6];
+            symptome.forEach(s => {
+                const opt = symptomQ.options.find(o => o.value === s);
+                if (opt) symptomScore += opt.points;
+            });
+        }
+        rawScore += Math.max(0, symptomScore);
+        
+        const normalized = Math.round((rawScore / MAX_RAW) * 100);
+        return Math.min(100, Math.max(0, normalized));
+    }
+    
+    function getProfile(score) {
+        if (score >= 75) return 'gruen';
+        if (score >= 40) return 'gelb';
+        return 'rot';
+    }
+    
+    // ==========================================
+    // RESULT DISPLAY (Hybrid-Teaser DOI)
+    // Sofort: Score-Circle + Kurztext + CTAs
+    // Per Mail nach DOI: Ausführliche Auswertung
+    // ==========================================
+    
+    function showResult() {
+        const score = calculateScore();
+        const profile = getProfile(score);
+        const vorname = answers['vorname'] || 'du';
+        const name = tiername || 'dein Tier';
+        const hatPartnerInteresse = answers['partner_interesse'] === 'ja_interesse' || answers['partner_interesse'] === 'vielleicht';
+        
+        document.getElementById('quiz-container').classList.add('hidden');
+        document.getElementById('result-screen').classList.remove('hidden');
+        
+        const colors = {
+            gruen: { bg: 'bg-green-50', border: 'border-green-200', text: 'text-green-700', stroke: '#22c55e', emoji: '🎉', label: 'Gute Basis' },
+            gelb:  { bg: 'bg-yellow-50', border: 'border-yellow-200', text: 'text-yellow-700', stroke: '#eab308', emoji: '⚡', label: 'Verbesserungspotenzial' },
+            rot:   { bg: 'bg-red-50', border: 'border-red-200', text: 'text-red-700', stroke: '#ef4444', emoji: '🚨', label: 'Handlungsbedarf' }
+        };
+        const c = colors[profile];
+        
+        const circumference = 283;
+        const offset = circumference - (score / 100) * circumference;
+        
+        // --- Kurztext (Teaser, sofort sichtbar) ---
+        const teaserTexts = {
+            gruen: {
+                headline: `Toll, ${vorname}! ${name} ist gut versorgt.`,
+                teaser: `Dein Score zeigt: Du machst vieles richtig! Dennoch gibt es oft Feinheiten, die einen großen Unterschied machen können – z.B. beim <strong>mineralischen Gleichgewicht</strong>.`
+            },
+            gelb: {
+                headline: `${name} verdient noch mehr, ${vorname}!`,
+                teaser: `Dein Score zeigt <strong>echtes Verbesserungspotenzial</strong>. Kleine Änderungen bei der Ernährung können schon nach 2–4 Wochen sichtbar wirken – mehr Energie, besseres Fell, weniger Probleme.`
+            },
+            rot: {
+                headline: `${vorname}, hier solltest du handeln – für ${name}.`,
+                teaser: `Dein Score zeigt <strong>deutlichen Handlungsbedarf</strong>. Die gute Nachricht: Die meisten berichten innerhalb von 4–8 Wochen von spürbaren Verbesserungen durch eine Ernährungsumstellung.`
+            }
+        };
+        const tt = teaserTexts[profile];
+        
+        // --- Extra Hints ---
+        let extraHints = '';
+        if (answers['alter'] === 'senior') {
+            extraHints += `<div class="flex items-start gap-2.5 ${c.bg} ${c.border} border rounded-xl p-3 sm:p-4 text-xs sm:text-sm"><span class="text-base sm:text-lg flex-shrink-0">👴</span><span>Gerade im Alter braucht ${name} angepasste Nährstoffe für mehr Lebensqualität.</span></div>`;
+        }
+        if (answers['futter'] === 'trockenfutter_standard') {
+            extraHints += `<div class="flex items-start gap-2.5 bg-amber-50 border border-amber-200 rounded-xl p-3 sm:p-4 text-xs sm:text-sm mt-2.5"><span class="text-base sm:text-lg flex-shrink-0">💡</span><span>Wusstest du? Viele Standard-Trockenfutter enthalten nur 4 % Fleisch – der Rest sind oft Getreide, Zucker und künstliche Zusätze.</span></div>`;
+        }
+        const symptome = answers['symptome'] || [];
+        if (symptome.length >= 3 && !symptome.includes('keine')) {
+            extraHints += `<div class="flex items-start gap-2.5 bg-orange-50 border border-orange-200 rounded-xl p-3 sm:p-4 text-xs sm:text-sm mt-2.5"><span class="text-base sm:text-lg flex-shrink-0">⚠️</span><span>Mehrere gleichzeitige Symptome sind ein deutliches Signal für Handlungsbedarf.</span></div>`;
+        }
+        
+        // --- WhatsApp Texts ---
+        const whatsappKunde = encodeURIComponent(`Hi Cedric, ich habe gerade den Futtercheck für ${name} gemacht (Score: ${score}/100). Ich hätte gerne eine Beratung zur Ernährung.`);
+        const whatsappPartner = encodeURIComponent(`Hi Cedric, ich habe gerade den Futtercheck gemacht und interessiere mich für die Reico-Partnerschaft. Kannst du mir mehr erzählen?`);
+        
+        // --- Build Result HTML ---
+        let html = `
+        <div class="result-card">
+            <!-- Score Circle (Teaser) -->
+            <div class="text-center mb-6 sm:mb-8">
+                <div class="text-4xl sm:text-5xl mb-3 sm:mb-4">${c.emoji}</div>
+                <h2 class="text-xl sm:text-3xl font-extrabold text-reico-alge mb-4 sm:mb-6 px-2">${tt.headline}</h2>
+                
+                <div class="relative inline-flex items-center justify-center mb-3 sm:mb-4">
+                    <svg class="w-32 h-32 sm:w-40 sm:h-40 transform -rotate-90" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#EAE2D5" stroke-width="8"/>
+                        <circle id="score-circle" cx="50" cy="50" r="45" fill="none" stroke="${c.stroke}" stroke-width="8" stroke-linecap="round" class="score-circle" style="stroke-dashoffset: ${offset}"/>
+                    </svg>
+                    <div class="absolute text-center">
+                        <span class="text-2xl sm:text-3xl font-extrabold text-reico-alge">${score}</span>
+                        <span class="text-xs sm:text-sm text-reico-text/50 block">/100</span>
+                    </div>
+                </div>
+                
+                <div class="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full ${c.bg} ${c.border} border">
+                    <span class="text-xs sm:text-sm font-bold ${c.text}">${c.label}</span>
+                </div>
+            </div>
+            
+            <!-- Teaser Result (sofort sichtbar) -->
+            <div class="bg-white rounded-2xl sm:rounded-3xl shadow-lg border border-reico-kalk/40 p-5 sm:p-10 mb-4 sm:mb-6">
+                <div class="text-reico-text/80 leading-relaxed text-sm sm:text-base mb-4 sm:mb-6">${tt.teaser}</div>
+                
+                ${extraHints ? `<div class="mb-4 sm:mb-6">${extraHints}</div>` : ''}
+                
+                <!-- Blurred Teaser (DOI-Anreiz) -->
+                <div class="relative rounded-2xl overflow-hidden mb-4 sm:mb-6">
+                    <div class="blur-teaser bg-reico-chlorophyll/20 p-5 sm:p-6 space-y-2">
+                        <p class="text-sm font-semibold text-reico-alge">📋 Deine individuelle Auswertung:</p>
+                        <p class="text-xs text-reico-text/70">✅ Detaillierte Futteranalyse für ${name}</p>
+                        <p class="text-xs text-reico-text/70">✅ 3 konkrete Verbesserungsvorschläge</p>
+                        <p class="text-xs text-reico-text/70">✅ Produktempfehlung (kein Spam)</p>
+                        <p class="text-xs text-reico-text/70">✅ Nährstoff-Checkliste zum Ausdrucken</p>
+                    </div>
+                    <div class="absolute inset-0 flex items-center justify-center bg-white/60 backdrop-blur-[2px]">
+                        <div class="bg-white rounded-xl shadow-lg border border-reico-kalk px-4 sm:px-6 py-3 sm:py-4 text-center max-w-[280px]">
+                            <span class="text-lg sm:text-xl mb-1 block">📬</span>
+                            <p class="text-xs sm:text-sm font-bold text-reico-alge mb-1">Ausführliche Auswertung per E-Mail</p>
+                            <p class="text-[10px] sm:text-xs text-reico-text/60">Bestätige deine E-Mail (Double-Opt-in), um die vollständige Analyse zu erhalten.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Kunden-CTA -->
+                <div class="bg-reico-chlorophyll/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-4">
+                    <p class="text-reico-alge font-semibold text-sm sm:text-base mb-1.5 sm:mb-2">🐾 Persönliche Futterberatung</p>
+                    <p class="text-xs sm:text-sm text-reico-text/70 mb-3 sm:mb-4">In einem kurzen Gespräch zeige ich dir, welches Futter optimal für ${name} wäre – kostenlos und ohne Druck.</p>
+                    <div class="space-y-2.5 sm:space-y-3">
+                        <a href="https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappKunde}" target="_blank"
+                           onclick="trackCTA('kunde')"
+                           class="whatsapp-btn w-full text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold shadow-lg flex items-center justify-center gap-2.5 text-sm sm:text-base">
+                            <i data-lucide="message-circle" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+                            <span>Jetzt per WhatsApp beraten lassen</span>
+                        </a>
+                    </div>
+                </div>
+            </div>`;
+        
+        // --- Partner-Brücke (immer zeigen, bei Interesse prominent) ---
+        const partnerInteresse = answers['partner_interesse'];
+        const isStrongInterest = partnerInteresse === 'ja_interesse';
+        const showPartnerBlock = true; // Immer zeigen
+
+        if (showPartnerBlock) {
+            html += `
+            <!-- Partner-Brücke -->
+            <div class="bg-white rounded-2xl sm:rounded-3xl shadow-lg border-2 ${isStrongInterest ? 'border-reico-kristall' : 'border-reico-kalk/40'} p-5 sm:p-10 mb-4 sm:mb-6 ${isStrongInterest ? 'ring-2 ring-reico-kristall/20' : ''}">
+                <div class="text-center mb-4 sm:mb-6">
+                    <span class="text-3xl sm:text-4xl block mb-2 sm:mb-3">🚀</span>
+                    <h3 class="text-lg sm:text-xl font-extrabold text-reico-alge mb-2">So wurde aus meiner Futtersuche ein Business</h3>
+                    <p class="text-xs sm:text-sm text-reico-text/60">Von Cedric Nitsch – Reico Fachberater & Business Mentor</p>
+                </div>
+                
+                <div class="text-reico-text/80 text-xs sm:text-sm leading-relaxed mb-4 sm:mb-6">
+                    <p class="mb-3">Vor einigen Jahren stand ich genau dort, wo du jetzt bist – auf der Suche nach dem besten Futter für meinen Hund. Dabei entdeckte ich Reico und eine Möglichkeit, die mein Leben verändert hat.</p>
+                    <p>Heute helfe ich nicht nur meinem eigenen Tier, sondern auch hunderten anderen Tierbesitzern – und habe mir damit ein <strong>solides Einkommen</strong> aufgebaut. Alles begann mit genau diesem Futtercheck.</p>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-2.5 sm:gap-3 mb-4 sm:mb-6">
+                    <div class="bg-reico-chlorophyll/30 rounded-xl p-3 sm:p-4 text-center">
+                        <span class="text-lg sm:text-xl block mb-1">💰</span>
+                        <p class="text-[10px] sm:text-xs font-bold text-reico-alge">Ab 83,30 €/Jahr</p>
+                        <p class="text-[9px] sm:text-[10px] text-reico-text/50">Kein Risiko</p>
+                    </div>
+                    <div class="bg-reico-chlorophyll/30 rounded-xl p-3 sm:p-4 text-center">
+                        <span class="text-lg sm:text-xl block mb-1">🤝</span>
+                        <p class="text-[10px] sm:text-xs font-bold text-reico-alge">Empfehlen statt Verkaufen</p>
+                        <p class="text-[9px] sm:text-[10px] text-reico-text/50">Kein Lager, kein Druck</p>
+                    </div>
+                    <div class="bg-reico-chlorophyll/30 rounded-xl p-3 sm:p-4 text-center">
+                        <span class="text-lg sm:text-xl block mb-1">⏰</span>
+                        <p class="text-[10px] sm:text-xs font-bold text-reico-alge">Flexible Zeiteinteilung</p>
+                        <p class="text-[9px] sm:text-[10px] text-reico-text/50">Neben- oder Vollzeit</p>
+                    </div>
+                    <div class="bg-reico-chlorophyll/30 rounded-xl p-3 sm:p-4 text-center">
+                        <span class="text-lg sm:text-xl block mb-1">❤️</span>
+                        <p class="text-[10px] sm:text-xs font-bold text-reico-alge">Tierliebe + Einkommen</p>
+                        <p class="text-[9px] sm:text-[10px] text-reico-text/50">Sinnvolle Arbeit</p>
+                    </div>
+                </div>
+                
+                <a href="https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappPartner}" target="_blank"
+                   onclick="trackCTA('partner')"
+                   class="cta-secondary w-full text-white px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl font-bold shadow-lg flex items-center justify-center gap-2.5 text-sm sm:text-base ${isStrongInterest ? 'pulse-glow' : ''}">
+                    <span>🚀</span>
+                    <span>Mehr über die Partnerschaft erfahren</span>
+                </a>
+                
+                <p class="text-center text-[9px] sm:text-[10px] text-reico-text/40 mt-2 sm:mt-3">Unverbindliches Gespräch · Kein Abo · Kein Vertrag</p>
+            </div>`;
+        }
+        
+        html += `
+            <!-- Trust -->
+            <div class="text-center text-[10px] sm:text-xs text-reico-text/40 space-y-1 mt-4">
+                <p>🔒 Deine Daten sind sicher · DSGVO-konform · Kein Spam</p>
+                <p>Reico & Partner Vertriebs GmbH · Made in Germany · Seit über 30 Jahren</p>
+            </div>
+        </div>`;
+        
+        document.getElementById('result-screen').innerHTML = html;
+        lucide.createIcons();
+        
+        // Animate score circle
+        setTimeout(() => {
+            const circle = document.getElementById('score-circle');
+            if (circle) circle.style.strokeDashoffset = offset;
+        }, 100);
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        // Track conversion
+        if (typeof fbq !== 'undefined') fbq('track', 'Lead', { content_name: 'Futtercheck Completed', value: score });
+        
+        // Send to Brevo with tags
+        sendToBrevo(score, profile);
+    }
+    
+    // ==========================================
+    // CTA TRACKING (Brevo Tags)
+    // ==========================================
+    
+    function trackCTA(type) {
+        // Fire specific pixel events (CTA-Tracking nur über Meta Pixel)
+        if (typeof fbq !== 'undefined') {
+            if (type === 'partner') {
+                fbq('trackCustom', 'PartnerInteresse', { source: 'futtercheck_result' });
+            } else {
+                fbq('trackCustom', 'KundeInteresse', { source: 'futtercheck_result' });
+            }
+        }
+    }
+    
+    // ==========================================
+    // BREVO INTEGRATION (Natives Brevo-Formular)
+    // ==========================================
+    //
+    // Ablauf:
+    //   Verstecktes Brevo-Formular wird programmatisch befüllt
+    //   → sibforms main.js fängt den Submit ab
+    //   → AJAX POST an sibforms.com
+    //   → Brevo sendet automatisch DOI-Bestätigungsmail
+    //   → Alle 8 Custom-Attribute werden als Formularfelder übergeben
+    //
+    // Felder im Formular:
+    //   EMAIL, VORNAME, HUND_KATZE, TIERNAME, FUTTERCHECK_SCORE,
+    //   FUTTERCHECK_FUTTER, FUTTERCHECK_FARB_SCORE, PARTNER_INTERESSE,
+    //   SMS + SMS__COUNTRY_CODE, email_address_check (Honeypot), locale
+
+    // Mapping: Futter-Value → lesbarer Text
+    const FUTTER_LABELS = {
+        'nassfutter_premium': 'Hochwertiges Nassfutter',
+        'barf': 'BARF / Rohfütterung',
+        'selbstgekocht': 'Selbstgekocht',
+        'trockenfutter_premium': 'Trockenfutter (Premium)',
+        'trockenfutter_standard': 'Trockenfutter (Standard)',
+        'misch': 'Mischfütterung (Nass + Trocken)',
+        'unsicher': 'Unsicher / wechselt oft'
+    };
+
+    // Mapping: Quiz-Antwort → Brevo PARTNER_INTERESSE (Text)
+    const PARTNER_INTERESSE_MAP = {
+        'ja_interesse': 'Stark',
+        'vielleicht': 'Leicht',
+        'nein': 'Kunde'
+    };
+
+    function sendToBrevo(score, profile) {
+        console.log('🚀 sendToBrevo() gestartet – Score:', score, 'Profil:', profile);
+
+        // 1. Formular finden
+        const form = document.getElementById('sib-form');
+        if (!form) {
+            console.error('❌ Brevo: Verstecktes Formular (#sib-form) nicht gefunden!');
+            return;
+        }
+        console.log('✅ Formular #sib-form gefunden');
+
+        // 2. Werte vorbereiten
+        const partnerInteresse = answers['partner_interesse'] || 'nein';
+        const futterLabel = FUTTER_LABELS[answers['futter']] || answers['futter'] || '';
+        const partnerLabel = PARTNER_INTERESSE_MAP[partnerInteresse] || 'Kunde';
+        const phoneNumber = answers['phone'] || '';
+
+        // 3. Feld-Mapping: sib-ID → Wert
+        //    name-Attribut bleibt unverändert (EMAIL, VORNAME, etc.) → sibforms braucht das
+        //    id-Attribut hat sib-Prefix → vermeidet Konflikte mit Quiz-Formular
+        //    SMS-Felder: sibforms main.js ERSETZT die originalen Inputs!
+        //      → Original <input id="sib-sms"> wird zu <input class="sib-sms-select__phone-number" name="SMS">
+        //      → Original <select id="sib-sms-country"> wird zu <input class="sib-sms-select__calling-code" name="SMS__COUNTRY_CODE">
+        //    Darum: SMS-Felder per name-Attribut selektieren (nicht per id)
+        const fieldMap = [
+            { sel: '#sib-email',               name: 'EMAIL',                  value: answers['email'] || '' },
+            { sel: '#sib-vorname',             name: 'VORNAME',                value: answers['vorname'] || '' },
+            { sel: '#sib-hund-katze',          name: 'HUND_KATZE',             value: tierart || '' },
+            { sel: '#sib-tiername',            name: 'TIERNAME',               value: tiername || '' },
+            { sel: '#sib-score',               name: 'FUTTERCHECK_SCORE',      value: String(score) },
+            { sel: '#sib-futter',              name: 'FUTTERCHECK_FUTTER',     value: futterLabel },
+            { sel: '#sib-farb-score',          name: 'FUTTERCHECK_FARB_SCORE', value: profile },
+            { sel: '#sib-interesse',           name: 'PARTNER_INTERESSE',      value: partnerLabel },
+            { sel: '[name="SMS"]',             name: 'SMS',                    value: phoneNumber },
+            { sel: '[name="SMS__COUNTRY_CODE"]', name: 'SMS__COUNTRY_CODE',    value: '+49' }
+        ];
+
+        // 4. Felder befüllen mit Null-Checks
+        let allFieldsOk = true;
+        const filledData = {};
+
+        fieldMap.forEach(({ sel, name, value }) => {
+            const el = form.querySelector(sel);
+            if (el) {
+                el.value = value;
+                filledData[name] = value;
+                console.log(`  ✅ ${name} (${sel}) = "${value}"`);
+            } else {
+                allFieldsOk = false;
+                console.error(`  ❌ Feld nicht gefunden: ${sel} (name="${name}")`);
+            }
+        });
+
+        // 5. Honeypot leer setzen (Anti-Bot)
+        const honeypot = form.querySelector('[name="email_address_check"]');
+        if (honeypot) {
+            honeypot.value = '';
+            console.log('  ✅ Honeypot (email_address_check) = "" (leer)');
+        } else {
+            console.warn('  ⚠️ Honeypot-Feld nicht gefunden');
+        }
+
+        // 6. Zusammenfassung loggen
+        console.log('📤 Brevo-Formular wird abgesendet …');
+        console.log('📦 Formulardaten:', JSON.stringify(filledData, null, 2));
+        if (!allFieldsOk) {
+            console.warn('⚠️ Nicht alle Felder wurden gefunden – Formular wird trotzdem abgesendet');
+        }
+
+        // 7. Submit auslösen – sibforms main.js fängt das ab und macht AJAX
+        const submitBtn = form.querySelector('[type="submit"]');
+        if (submitBtn) {
+            try {
+                submitBtn.click();
+                console.log('✅ Brevo: Formular-Submit ausgelöst – DOI-Mail wird versendet');
+            } catch (err) {
+                console.error('❌ Brevo Formular-Submit Fehler:', err);
+            }
+        } else {
+            console.error('❌ Submit-Button nicht gefunden im Formular!');
+        }
+    }
+    
+    // ==========================================
+    // INIT
+    // ==========================================
+    document.addEventListener('DOMContentLoaded', () => {
+        lucide.createIcons();
+    });
+    </script>
+
+<!-- ============================================ -->
+<!-- VERSTECKTES BREVO DOI-FORMULAR               -->
+<!-- Wird programmatisch befüllt und abgesendet   -->
+<!-- sibforms main.js macht den AJAX-Submit       -->
+<!-- ============================================ -->
+<div style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;" aria-hidden="true">
+  <div class="sib-form">
+    <div id="sib-form-container" class="sib-form-container">
+      <div id="error-message" class="sib-form-message-panel" style="display:none;"></div>
+      <div id="success-message" class="sib-form-message-panel" style="display:none;"></div>
+      <div id="sib-container" class="sib-container--medium sib-container--vertical">
+        <form id="sib-form" method="POST" action="https://527052f3.sibforms.com/serve/MUIFAEsoUsu2lQEwZbEGWqu3v6u9wL2SIPPUymK-A_Vc0QPh5brKiyc__E3MTjN9YYhO3Tqv-YtqYTJeAH6h3IV0Mt5ECrXtrWv73icuhdF0rgKNrVbQDxNTrQLccP0-cvUBbw9TcGjJobMlR1757jpWbQmfb6FPlxkFczQhk0UQ5mCi5IIPD5GZPTV7gIyGgCy2PSFGJ-ObCxEZ1g==" data-type="subscription">
+
+          <!-- E-Mail (required) -->
+          <div class="sib-input sib-form-block">
+            <div class="form__entry entry_block">
+              <div class="form__label-row">
+                <div class="entry__field">
+                  <input class="input" type="text" id="sib-email" name="EMAIL" autocomplete="off" data-required="true" required />
+                </div>
+              </div>
+              <label class="entry__error entry__error--primary"></label>
+            </div>
+          </div>
+
+          <!-- Vorname (required) -->
+          <div class="sib-input sib-form-block">
+            <div class="form__entry entry_block">
+              <div class="form__label-row">
+                <div class="entry__field">
+                  <input class="input" maxlength="200" type="text" id="sib-vorname" name="VORNAME" autocomplete="off" data-required="true" required />
+                </div>
+              </div>
+              <label class="entry__error entry__error--primary"></label>
+            </div>
+          </div>
+
+          <!-- HUND_KATZE (required) -->
+          <div class="sib-input sib-form-block">
+            <div class="form__entry entry_block">
+              <div class="form__label-row">
+                <div class="entry__field">
+                  <input class="input" maxlength="200" type="text" id="sib-hund-katze" name="HUND_KATZE" autocomplete="off" data-required="true" required />
+                </div>
+              </div>
+              <label class="entry__error entry__error--primary"></label>
+            </div>
+          </div>
+
+          <!-- TIERNAME (required) -->
+          <div class="sib-input sib-form-block">
+            <div class="form__entry entry_block">
+              <div class="form__label-row">
+                <div class="entry__field">
+                  <input class="input" maxlength="200" type="text" id="sib-tiername" name="TIERNAME" autocomplete="off" data-required="true" required />
+                </div>
+              </div>
+              <label class="entry__error entry__error--primary"></label>
+            </div>
+          </div>
+
+          <!-- FUTTERCHECK_SCORE (required, numeric) -->
+          <div class="sib-input sib-form-block">
+            <div class="form__entry entry_block">
+              <div class="form__label-row">
+                <div class="entry__field">
+                  <input class="input" maxlength="200" type="text" data-numeric="true" id="sib-score" name="FUTTERCHECK_SCORE" autocomplete="off" data-required="true" required />
+                </div>
+              </div>
+              <label class="entry__error entry__error--primary"></label>
+            </div>
+          </div>
+
+          <!-- FUTTERCHECK_FARB_SCORE (required) -->
+          <div class="sib-input sib-form-block">
+            <div class="form__entry entry_block">
+              <div class="form__label-row">
+                <div class="entry__field">
+                  <input class="input" maxlength="200" type="text" id="sib-farb-score" name="FUTTERCHECK_FARB_SCORE" autocomplete="off" data-required="true" required />
+                </div>
+              </div>
+              <label class="entry__error entry__error--primary"></label>
+            </div>
+          </div>
+
+          <!-- FUTTERCHECK_FUTTER (required) -->
+          <div class="sib-input sib-form-block">
+            <div class="form__entry entry_block">
+              <div class="form__label-row">
+                <div class="entry__field">
+                  <input class="input" maxlength="200" type="text" id="sib-futter" name="FUTTERCHECK_FUTTER" autocomplete="off" data-required="true" required />
+                </div>
+              </div>
+              <label class="entry__error entry__error--primary"></label>
+            </div>
+          </div>
+
+          <!-- PARTNER_INTERESSE (required) -->
+          <div class="sib-input sib-form-block">
+            <div class="form__entry entry_block">
+              <div class="form__label-row">
+                <div class="entry__field">
+                  <input class="input" maxlength="200" type="text" id="sib-interesse" name="PARTNER_INTERESSE" autocomplete="off" data-required="true" required />
+                </div>
+              </div>
+              <label class="entry__error entry__error--primary"></label>
+            </div>
+          </div>
+
+          <!-- SMS / WhatsApp (optional) -->
+          <div class="sib-sms-field sib-form-block">
+            <div class="form__entry entry_block">
+              <div class="form__label-row">
+                <div class="sib-sms-input-wrapper" style="direction:ltr">
+                  <div class="sib-sms-input" data-placeholder="WhatsApp" data-country-code="DE" data-value="" data-attributename="SMS">
+                    <div class="entry__field">
+                      <select class="input" id="sib-sms-country" name="SMS__COUNTRY_CODE">
+                        <option value="+49" selected>+49 DE</option>
+                        <option value="+43">+43 AT</option>
+                        <option value="+41">+41 CH</option>
+                      </select>
+                    </div>
+                    <div class="entry__field" style="width:100%">
+                      <input type="tel" class="input" id="sib-sms" name="SMS" autocomplete="off" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <label class="entry__error entry__error--primary"></label>
+              <label class="entry__error entry__error--secondary"></label>
+            </div>
+          </div>
+
+          <!-- Submit Button (versteckt, wird programmatisch geklickt) -->
+          <div style="text-align:center">
+            <button class="sib-form-block__button sib-form-block__button-with-loader" form="sib-form" type="submit">
+              <svg class="icon clickable__icon progress-indicator__icon sib-hide-loader-icon" viewBox="0 0 512 512">
+                <path d="M460.116 373.846l-20.823-12.022c-5.541-3.199-7.54-10.159-4.663-15.874 30.137-59.886 28.343-131.652-5.386-189.946-33.641-58.394-94.896-95.833-161.827-99.676C261.028 55.961 256 50.751 256 44.352V20.309c0-6.904 5.808-12.337 12.703-11.982 83.556 4.306 160.163 50.864 202.11 123.677 42.063 72.696 44.079 162.316 6.031 236.832-3.14 6.148-10.75 8.461-16.728 5.01z" />
+              </svg>
+              Absenden
+            </button>
+          </div>
+
+          <!-- Honeypot (Anti-Bot – MUSS leer bleiben!) -->
+          <input type="text" name="email_address_check" value="" class="input--hidden">
+          <!-- Locale -->
+          <input type="hidden" name="locale" value="de">
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- sibforms JS-Konfiguration -->
+<script>
+  window.REQUIRED_CODE_ERROR_MESSAGE = 'Wähle bitte einen Ländervorwahl aus.';
+  window.LOCALE = 'de';
+  window.EMAIL_INVALID_MESSAGE = window.SMS_INVALID_MESSAGE = "Die eingegebenen Informationen sind nicht gültig. Bitte überprüfe das Feldformat und versuche es erneut.";
+  window.REQUIRED_ERROR_MESSAGE = "Dieses Feld darf nicht leer sein. ";
+  window.GENERIC_INVALID_MESSAGE = "Die eingegebenen Informationen sind nicht gültig. Bitte überprüfe das Feldformat und versuche es erneut.";
+  window.INVALID_NUMBER = "Die eingegebenen Informationen sind nicht gültig. Bitte überprüfe das Feldformat und versuche es erneut.";
+  window.INVALID_DATE = "Bitte gib ein gültiges Datum ein";
+  window.REQUIRED_MULTISELECT_MESSAGE = 'Wähle bitte mindestens eine Option aus';
+  window.translation = {
+    common: {
+      selectedList: '{quantity} Liste ausgewählt',
+      selectedLists: '{quantity} Listen ausgewählt',
+      selectedOption: '{quantity} ausgewählt',
+      selectedOptions: '{quantity} ausgewählt',
+    }
+  };
+  var AUTOHIDE = Boolean(0);
+</script>
+<!-- sibforms CSS + JS (Formular-Handler für AJAX DOI-Submit) -->
+<link rel="stylesheet" href="https://sibforms.com/forms/end-form/build/sib-styles.css">
+<script defer src="https://sibforms.com/forms/end-form/build/main.js"></script>
+
+</body>
+</html>
